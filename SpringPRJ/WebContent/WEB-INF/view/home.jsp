@@ -316,6 +316,6 @@
 								<input type="hidden" id="conf"value="0"/>
 		<%@include file="/WEB-INF/view/user/userScript.jsp" %>
 
-<!--  수정확인중 11월 2일 9시 30분 마스터 -->
+<!--  수정확인중 11월 2일 9시 41분 마스터 -->
 	</body>
 </html>
