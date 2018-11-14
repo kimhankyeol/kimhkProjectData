@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.PtMapper">
+	<!-- 글등록 -->
+	<insert id="insertPtText" parameterType="ManagePresentationDTO"><!--  useGeneratedKeys="true" keyColumn="id" keyProperty="id"-  -->
+
+		INSERT 
+		INTO 
+		MANAGE_PRESENTATION(
+		MANAGE_TITLE,
+		MANAGE_CONTENT,
+		MANAGE_CODE,
+		DOWNCK,
+		REGNO,
+		REGDATE
+		)
+		VALUES(
+		#{manageTitle},
+		#{manageContent},
+		#{manageCode},
+		#{downCk},
+		#{regNo},
+		now()
+		)
+
+	<selectKey  resultType="string" keyProperty="manageNo" order="AFTER" >
+		SELECT last_insert_id() FROM DUAL;
+	</selectKey> 
+	</insert>
+	<!-- 발표 파일 등록 -->
+	<insert id="insertPtFile" parameterType="PreFileDTO">
+	INSERT
+	INTO
+	PRE_FILE(
+	FILE_ORGNAME,
+	FILE_SERVERNAME,
+	FILE_PATH,
+	REGNO,
+	REGDATE,
+	MANAGE_CODE,
+	MANAGE_NO
+	)
+	VALUES(
+	#{fileOrgName},
+	#{fileServerName},
+	#{filePath},
+	#{regNo},
+	now(),
+	#{manageCode},
+	#{manageNo}
+	)
+	<selectKey  resultType="string" keyProperty="fileNo" order="AFTER" >
+		SELECT last_insert_id() FROM DUAL;
+	</selectKey> 
+	
+	</insert>
+	
+	<!-- 코드번호 생성후 난수 합침으로 고유한 번호를 만듬 -->
+	<update id="updateManageCode" parameterType="ManagePresentationDTO">
+	UPDATE
+	MANAGE_PRESENTATION
+	SET MANAGE_CODE=#{manageCode}
+	WHERE MANAGE_NO=#{manageNo}
+	</update>
+	<!-- 코드번호 입력후 발표 글 조회  -->
+	<select id="getPtMain" parameterType="string" resultType="ManagePresentationDTO">
+		SELECT 
+			MANAGE_NO AS manageNo,
+			MANAGE_TITLE AS manageTitle,
+			MANAGE_CONTENT AS manageContent,
+			MANAGE_CODE AS manageCode,
+			REGNO AS regNo,
+			REGDATE AS regDate,
+			UPDDATE AS updDate,
+			FILE_NO AS fileNo,
+			DOWNCK AS downCk
+		FROM
+			MANAGE_PRESENTATION
+		WHERE
+			MANAGE_CODE=#{manageCode}
+	</select>
+	<!-- 발표 파일 조회 -->
+	<select id="getPtMainFile" parameterType="string" resultType="PreFileDTO">
+		SELECT 
+			FILE_NO AS fileNo,
+			FILE_ORGNAME AS fileOrgName,
+			FILE_SERVERNAME AS fileServerName,
+			FILE_PATH AS filePath,
+			MANAGE_CODE AS manageCode,
+			REGNO AS regNo,
+			REGDATE AS regDate
+		FROM
+			PRE_FILE
+		WHERE
+			MANAGE_CODE=#{manageCode}
+	
+	</select>
+	<!-- 	//ManagementPresentation 에 fileNo을 넣기위해 만든 거 나중에 확인 후 불필요하면 지워도됨 -->
+	<update id="updateFileNo" parameterType="PreFileDTO">
+	UPDATE
+	MANAGE_PRESENTATION
+	SET FILE_NO=#{fileNo}
+	WHERE MANAGE_NO=#{manageNo}
+	</update>
+
+</mapper>

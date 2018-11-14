@@ -30,7 +30,7 @@
 	
 	<!-- 로그인  -->
 	<select id="getUserLogin" parameterType="UserDTO" resultType="UserDTO">
-	SELECT USER_NO,
+	SELECT USER_NO AS USERNO,
 	EMAIL,
 	PASSWORD,
 	USERNAME,

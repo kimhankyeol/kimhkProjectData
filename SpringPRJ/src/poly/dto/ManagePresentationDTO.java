@@ -3,13 +3,21 @@ package poly.dto;
 
 public class ManagePresentationDTO {
 	 private String manageNo;
-	 private String manageTitle;
-	 private String manageContent;
-     private String manageCode;
+	 private String manageTitle;//제목
+	 private String manageContent;//내용
+     private String manageCode;//방 입장코드
+     private String downCk;//다운로드 체크여부
 	 private String regNo;
 	 private String regDate;
 	 private String updNo;
 	 private String updDate;
+	 
+	public String getDownCk() {
+		return downCk;
+	}
+	public void setDownCk(String downCk) {
+		this.downCk = downCk;
+	}
 	public String getManageNo() {
 		return manageNo;
 	}

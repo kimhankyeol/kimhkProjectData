@@ -6,10 +6,27 @@ public class PreFileDTO {
 	private String fileOrgName;
 	private String fileServerName;
 	private String filePath;
+	private String manageCode;
+	private String manageNo;
 	private String regNo;
 	private String regDate;
 	private String updNo;
 	private String updDate;
+
+	
+	
+	public String getManageNo() {
+		return manageNo;
+	}
+	public void setManageNo(String manageNo) {
+		this.manageNo = manageNo;
+	}
+	public String getManageCode() {
+		return manageCode;
+	}
+	public void setManageCode(String manageCode) {
+		this.manageCode = manageCode;
+	}
 	public String getFileNo() {
 		return fileNo;
 	}

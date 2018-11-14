@@ -113,7 +113,6 @@ public class UserController {
 			uDTO=userService.getUserLogin(uDTO);// 성공하지못하면 아무것도 가져오지 못해서 널
 			String msg="";
 			String url="";
-			
 			if(uDTO==null) {
 				//로그인 실패
 				msg="로그인실패하셨습니다.";
@@ -125,6 +124,7 @@ public class UserController {
 				return "/alert";
 			}else {
 				//로그인 성공
+				log.info(uDTO.getUserNo());
 				session.setAttribute("email", uDTO.getEmail());
 				session.setAttribute("name",uDTO.getUserName());
 				session.setAttribute("userNo",uDTO.getUserNo());

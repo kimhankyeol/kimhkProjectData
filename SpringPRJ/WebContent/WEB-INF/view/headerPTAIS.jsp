@@ -32,6 +32,8 @@
 					<ul class="main-menu nav navbar-nav navbar-right">
 						<%if ("".equals(email)) {%>
 							<li><a href="/home.do">Home</a></li>
+							<li><a onclick="">질문</a></li>
+							<li><a onclick="">투표/설문</a></li>
 							<li><a data-toggle="modal" href="javascript:login()" onclick="openLoginModal();">Login</a></li>
 							<li><a href="#">아이디 찾기/비밀번호 찾기</a></li>
 							<li><a data-toggle="modal" href="javascript:void(0)" onclick="openRegisterModal();">회원가입</a></li> 

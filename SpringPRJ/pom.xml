@@ -251,19 +251,31 @@
         <artifactId>quartz</artifactId>
         <version>1.8.6</version>
     </dependency>
-	<!-- ppt -->
+	<!-- apache poi -->
+<!--  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-scratchpad</artifactId>
+    <version>3.10-FINAL</version>
+</dependency>  -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>3.9</version>
+</dependency>
+<!-- 
 <dependency>
     <groupId>org.apache.poi</groupId>
     <artifactId>poi</artifactId>
-    <version>3.10-FINAL</version>
+    <version>4.0.0</version>
 </dependency>
-		<!--itext -->
-	<dependency>
-	    <groupId>com.itextpdf</groupId>
-	    <artifactId>itextpdf</artifactId>
-	    <version>5.5.2</version>
-	</dependency>
-		
+ -->
+
+	<!-- itext -->
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>itextpdf</artifactId>
+    <version>5.5.2</version>
+</dependency>
 
     
    </dependencies>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.QuestionMapper">
+	<!-- 질문등록 -->
+	<insert id="insertQuestion" parameterType="QuestionDTO">
+		INSERT 
+		INTO 
+		QUESTION
+		(REGDATE,
+		CID,
+		QUESTION_CONTENT
+		,MANAGE_CODE)
+		VALUES
+		(now(),
+		#{cid},
+		#{questionContent},
+		#{manageCode})
+	</insert>
+	<!-- 질문 등록 후 리스트 -->
+	<select id="getQuestion" parameterType="QuestionDTO" resultType="QuestionDTO">
+		SELECT 
+			QUESTION_NO AS questionNo,
+			CID AS cid,
+			QUESTION_CONTENT AS questionContent,
+			MANAGE_CODE AS manageCode,
+			REGDATE AS regDate
+		FROM
+			QUESTION
+		WHERE
+			MANAGE_CODE=#{manageCode}
+		ORDER BY
+			REGDATE DESC;
+	
+	</select>
+	<!--  전체 질문 조회 -->
+	
+		<select id="getQuestionAll" parameterType="QuestionDTO" resultType="QuestionDTO">
+		SELECT 
+			QUESTION_NO AS questionNo,
+			CID AS cid,
+			QUESTION_CONTENT AS questionContent,
+			MANAGE_CODE AS manageCode,
+			REGDATE AS regDate
+		FROM
+			QUESTION
+		WHERE
+			MANAGE_CODE=#{manageCode}
+		ORDER BY
+			REGDATE DESC;
+	
+	</select>
+	
+</mapper>

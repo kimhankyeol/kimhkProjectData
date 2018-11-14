@@ -6,5 +6,8 @@
     	<!-- 사용할 DTO 등록  -->
 		<typeAlias type="poly.dto.NoticeDTO" alias="NoticeDTO"/>
 		<typeAlias type="poly.dto.UserDTO" alias="UserDTO"/>
+		<typeAlias type="poly.dto.ManagePresentationDTO" alias="ManagePresentationDTO"/>
+		<typeAlias type="poly.dto.PreFileDTO" alias="PreFileDTO"/>
+		<typeAlias type="poly.dto.QuestionDTO" alias="QuestionDTO"/>
     </typeAliases>
 </configuration>
