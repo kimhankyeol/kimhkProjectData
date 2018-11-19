@@ -41,7 +41,6 @@
     
     <!-- custom css question -->
     <link rel="stylesheet" href="/css/custom.css" />
-
   
 </head>
 <body>
@@ -190,9 +189,39 @@
 					</ul>
 					<div class="tab-content">
 						<div id="tabSurvey" class="tab-pane in active">
-						제목: <input type="text" placeholder="설문 제목을 입력해 주세요"/>
-						성별:
+							<div class="form-group">
+								<label for="surveyTitle"><b style="color:red">*</b> 설문지 제목</label>
+							</div>
+							<div class="form-group">
+        						<input type="text" id="surveyTitle" class="form-control"  placeholder="설문지 제목을 입력해주세요">
+							</div>
+							
+								<div class="form-group">
+									<label for="surveyQuestion" style="width:50%"><b style="color:red">*</b> 설문지 질문 </label>
+								</div>
+							<div id="questionList">
+	        					<div class="form-group">
+	        						<input type="text" id="surveyQuestion" name="surveyQuestion" class="form-control surveyQuestion" placeholder="설문지 질문을 입력해주세요">
+	        					</div>
+	        				</div>
+							<!-- <div class="form-group">
+								<label for="surveyAnswer"><b style="color:red">*</b> 설문지 답 </label>
+								<label style="width:50%;float:right"><i class="fa fa-plus-circle fa-2x"></i><i class="fa fa-minus-circle fa-2x"></i></label>
+							</div>
+        					<div class="form-group">
+        						<input type="text" id="surveyAnswer" class="form-control" placeholder="설문지 답을 입력해주세요">
+        					</div> -->
+        					<div style="width:50%;float:left">
+        						<div onclick="javascript:questionAdd()" class="btn btn-success" style="cursor:pointer;width:92.5%;margin-left:5%;margin-right:2.5%;">질문 추가</div>
+        					</div>
+        					<div style="width:50%;float:left">
+        						 <div onclick="javascript:questionDel()" class="btn btn-danger " style="width:92.5%;margin-left:2.5%;margin-right:5%;">질문 삭제</div>
+        					</div>
+        			    
+        			  <!--   <div class="kim">asd</div>
+        			    <div class="kim">asd</div>   	 -->		
 						</div>
+						
 						<div id="tabVote" class="tab-pane">
 						김한결 2
 						</div>
@@ -200,7 +229,8 @@
 		     </div>
 		</div>
  </div>
-    
+ 
+
     <!-- /#wrapper -->
 
     <!-- jQuery -->
@@ -223,6 +253,7 @@
 	
 	<!-- 전송 누르면 질문 전송 -->
 	<script>
+	
 		function questionForm(){
 			var cont="";
 			$('#questionForm').ajaxForm({
@@ -362,7 +393,33 @@ function openTab(evt, tabName) {
 </script>
 
 <!-- 설문 추가 삭제 -->
+<script>
+function questionAdd(){
+	var qLength=$('.surveyQuestion').length;
+	if(qLength<3){
+	$('#questionList').append('<div class="form-group"><input type="text" name="surveyQuestion'+qLength+'" class="form-control surveyQuestion" placeholder="설문지 질문을 입력해주세요"></div>');
+	}else{
+		alert('설문지의 질문은 최대 3개까지 등록할 수 있습니다.');
+		return false;
+	}	
+	
+}
+function questionDel(){
+	var qLength=parseInt($('.surveyQuestion').length)-1;
+	
+		if(qLength>0){
+			$("input[name=surveyQuestion"+qLength+"]").remove();
+		}else{
+			alert('설문지의 질문은 최소 1개이상은 되어야 합니다.');
+			return false;
+		}
+	
+	
 
+	
+}
+
+</script>
 <script>
 
 $(document).ready(function(){ 
