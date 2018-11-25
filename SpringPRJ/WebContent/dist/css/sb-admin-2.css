@@ -33,6 +33,18 @@ body {
     border-left: 1px solid #e7e7e7;
   }
 }
+#page-wrapper3 {
+  min-height: 568px;
+  background-color: white;
+}
+@media (min-width: 768px) {
+  #page-wrapper3 {
+    position: inherit;
+    margin: 0 0 0 250px;
+    border-left: 1px solid #e7e7e7;
+  }
+}
+
 .navbar-top-links {
   margin-right: 0;
 }

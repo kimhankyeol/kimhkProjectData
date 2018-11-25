@@ -9,5 +9,6 @@
 		<typeAlias type="poly.dto.ManagePresentationDTO" alias="ManagePresentationDTO"/>
 		<typeAlias type="poly.dto.PreFileDTO" alias="PreFileDTO"/>
 		<typeAlias type="poly.dto.QuestionDTO" alias="QuestionDTO"/>
+		<typeAlias type="poly.dto.SurveyDTO" alias="SurveyDTO"/>
     </typeAliases>
 </configuration>

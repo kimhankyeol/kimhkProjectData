@@ -11,4 +11,7 @@ public interface IUserService {
 	
 	//로그인
 	public UserDTO getUserLogin(UserDTO uDTO) throws Exception;
+
+	//id찾기
+	public String getIdFind(UserDTO uDTO) throws Exception;
 }

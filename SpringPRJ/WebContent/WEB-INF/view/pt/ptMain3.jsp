@@ -1,111 +1,77 @@
+<%@page import="poly.dto.SurveyDTO"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIS-PTMAIN</title>
-<!-- <script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="/css/bootstrap.min.css"/> -->
-<link rel="stylesheet" href="/css/custom.css" />
-<%@include file="/WEB-INF/view/headerScript.jsp" %>	
-</head>
-<body >
-	<%@include file="/WEB-INF/view/headerPTAIS.jsp" %>
-		<div class="container bootstrap snippet" style="margin-top:20%">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="portlet portlet-default">
-						<div class="portlet-heading">
-							<div class="portlet-title">
-								<h4 style="color:white">
-								<i class="fa fa-circle text-green"></i>
-							     질문
-								</h4> 
-							</div>
-							<div class="clearfix"></div>
-						</div>
-						<div id="chat" class="panel-collapse collapse in">
-							<div class="portlet-body chat-widget" style="overflow-y:auto; width:auto; height:100%;">
-								<!-- 상단 -->
-								<div class="row">
-									<div class="col-lg-12">
-										<p class="text-center text-muted small">날짜</p>
-									</div>
-								</div>
-	<!-- 							본문
-								<div class="row">
-									<div class="col-lg-12">
-										<div class="media">
-											<a class="pull-left" href="#">
-												<img class="media-object img-circle" src="/img/new_logo.png"/>
-											</a>
-											<div class="media-body">
-												이름
-												<h4 class="media-heading">김한결
-													<span class="small pull-right">오전 12:13</span>
-												</h4>
-											</div>
-											내용
-											<p>안녕하세요</p>											
-										</div>
-									</div>
-								</div>
-								<hr />
-										본문
-								<div class="row">
-									<div class="col-lg-12">
-										<div class="media">
-											<a class="pull-left" href="#">
-												<img class="media-object img-circle" src="/img/new_logo.png"/>
-											</a>
-											<div class="media-body">
-												이름
-												<h4 class="media-heading">김한결2
-													<span class="small pull-right">오전 12:23</span>
-												</h4>
-											</div>
-											내용
-											<p>안녕하세요</p>											
-										</div>
-									</div>
-								</div>
-								<hr /> -->
-							</div>
-							<!-- 내용 입력 -->
-							<form action="">
-							<div class="portlet-footer">
-								<div class="row">
-									<div class="form-group col-xs-4">
-										<input style="height:40px;" type="text" id="chatName" class="form-control" placeholder="이름" maxlength="20"/>
-									</div>
-								</div>
-								<div class="row" style="height:90px">
-									<div class="form-group col-xs-8">
-										<textarea style="height:80px;" id="chatContent" class="form-control" placeholder="메시지를 입력하세요"  maxlength="100">
-										</textarea>
-									</div>
-									<div class="form-group col-xs-4">
-										<button type="button" class="btn btn-default pull-rigth">전송</button>
-										<div class="clearfix"></div>
-									</div>
-								
-								</div>
-							</div>
-							</form>
-							
-						</div>
-					</div>
-				</div>
-			</div>
+<% List<SurveyDTO> sList= (List<SurveyDTO>)request.getAttribute("sList");
+	String msg = (String)request.getAttribute("msg");
+%>
+
+
+
+<% if(msg=="y"){ %>
+<form id="surveyAudReg" action="/pt/surveyAudReg.do">
+	<div class="form-group">
+		<label for="surveyAudTitle"><h3>발표 제목 : <%=sList.get(0).getManageTitle() %></h3></label>
+	</div>
+	<hr />
+	<div class="form-group">
+		<label for="surveyAudVal"><h4>
+				<b style="color: red">*</b> 설문 제목 : <%=sList.get(0).getSurveyTitle() %>
+			</h4></label>
+	</div>
+	<hr />
+	<%for (int i=0 ; i<sList.size();i++) {%>
+	<div class="form-group">
+		<label for="surveyAudVal"><h4>
+				<i class="fa fa-check" id="surveyTextCss<%=i%>" style="color: red"></i>
+				설문 질문 <%=i+1%>번 : <%=sList.get(i).getSurveyTitleQ() %>
+			</h4></label>
+	</div>
+	<div class="form-group">
+		<input type="text" name="surveyAudVal"
+			class="form-control inputSurveyAudVal" placeholder="답변을 적어주세요">
+	</div>
+	<input type='hidden' name='surveyTitleQ' value="<%=sList.get(i).getSurveyTitleQ() %>" />
+	 <input type='hidden'name='surveyTitleNo' value="<%=sList.get(i).getSurveyTitleNo() %>" />
+	<hr />
+	<%} %>
+	<div class="form-group">
+		<label for="surveyNeedInfo"><h4><b style="color: red">*</b>필수 입력 정보</h4></label>
+	</div>
+	<hr />
+	<div class="form-group">
+		<label><h4><i id="surveyAudGenCss" class="fa fa-check" style="color: red"></i>성별</h4></label>
+	</div>
+	<div class="form-group">
+		<div class="switch-field">
+			<input type="radio" id="man" name="gender" value="m" /> 
+			<label for="man"><h4>남</h4></label> <input type="radio" id="woman" name="gender" value="w" /> <label for="woman"><h4>여</h4></label>
 		</div>
-		<!-- jQuery Plugins -->
-		<script type="text/javascript" src="/js/jquery.min.js"></script>
-		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="/js/main.js"></script>
-		<script type="text/javascript" src="/js/userValid.js"></script>
-			<%@include file="/WEB-INF/view/footerLoginRegModal.jsp" %>
-</body>
-</html>
+	</div>
+	<div class="form-group">
+		<label><h4><i id="surveyAudAgeCss" class="fa fa-check" style="color: red"></i>연령별</h4></label>'
+	</div>
+	<div class="form-group">
+		<div class="switch-field2">
+			<input type="radio" id="ten" name="age" value="10" /> 
+				<label for="ten"><h5>10대 이상</h5></label> 
+			<input type="radio" id="twenty"name="age" value="20" /> 
+				<label for="twenty"><h5>20대 이상</h5></label> 
+			<input type="radio" id="thirty" name="age" value="30" /> 
+				<label for="thirty"><h5>30대 이상</h5></label> 
+			<input type="radio" id="fourty" name="age" value="40" /> 
+				<label for="fourty"><h5>40대 이상</h5></label> 
+			<input type="radio" id="fifty" name="age" value="50" /> 
+				<label for="fifty"><h5>50대 이상</h5></label>
+		</div>
+	</div>
+	<hr />
+	<input type='hidden' name='svAnsOptType' value='1' />
+</form>
+<div style="width: 100%;">
+	<button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width: 95%; margin-left: 2.5%; margin-right: 2.5%; margin-bottom: 10%">설문 등록</button>
+</div>
+
+<%} else {%>
+설문지가 등록 되지 않았습니다.
+<%}%>

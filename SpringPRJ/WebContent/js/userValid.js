@@ -3,7 +3,6 @@ $(function(){
 	 //idck 버튼을 클릭했을 때 
 	    
 	    $("#emailCk").click(function() {
-	    	  var idck = 0;
 	    	  
 	        //userid 를 param.
 	         var email =  $("#email").val(); 
@@ -21,22 +20,19 @@ $(function(){
 	            
 	            	console.log(data);
 	                if (data>0) {
-	                     
+	                	$('#conf').val('0');
 	                    alert("아이디가 존재합니다. 다른 아이디를 입력해주세요.");
-	                    
-	                	$("#conf").val("0");// 회원가입 유효성검사를 위해 바꾸는 값
+	                    console.log(data)
 	                    $("#email").focus();
 	                   
 	                
 	                
 	                } else {
 	                    alert("사용가능한 아이디입니다.");
-	                	$("#conf").val("1");
-	                
+	                    console.log(data)
+	                    $('#conf').val('1');
 	                    $("#email").focus();
 	                  
-	                    idck = 1;
-	                   // $("#emailCk").val("가능합니다");
 	                }
 	            },
 	            error : function(error) {

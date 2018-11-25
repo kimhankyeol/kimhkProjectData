@@ -19,9 +19,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 
+import com.itextpdf.text.DocListener;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.RectangleReadOnly;
 import com.itextpdf.text.pdf.PdfWriter;
 
 
@@ -60,13 +64,17 @@ public class PPTtoPDFConverter{
             i++;
 		
 		}
+	
+		//Rectangle rect = new Rectangle(1000,1000);
+		Rectangle rect = new Rectangle(width,height);
 		
-	Document document = new Document();
+	Document document = new Document(rect,0,0,0,0);
 		File dir=new File(filePath);
 		if(!dir.isDirectory()) {
 			dir.mkdirs();
 		}
 		String pdfFileName=fileName+".pdf";
+		
 		PdfWriter.getInstance(document,new FileOutputStream(filePath+pdfFileName));
 		
 		

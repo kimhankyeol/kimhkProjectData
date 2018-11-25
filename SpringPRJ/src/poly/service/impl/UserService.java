@@ -32,4 +32,10 @@ public class UserService implements IUserService{
 		// TODO Auto-generated method stub
 		return userMapper.getUserLogin(uDTO);
 	}
+	//id찾기
+	@Override
+	public String getIdFind(UserDTO uDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getIdFind(uDTO);
+	}
 }

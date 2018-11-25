@@ -1,6 +1,7 @@
 package poly.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import poly.dto.ManagePresentationDTO;
 import poly.dto.PreFileDTO;
+import poly.dto.SurveyDTO;
 import poly.persistance.mapper.PtMapper;
 import poly.service.IPtService;
 
@@ -65,18 +67,62 @@ public class PtService implements IPtService{
 	
 	//코드번호 입력후 발표 글 조회
 	@Override
-	public ManagePresentationDTO getPtMain(String ptCode) throws Exception {
+	public ManagePresentationDTO getPtMain(String manageCode) throws Exception {
 		// TODO Auto-generated method stub
 		//일단은 글만 조회 
 		//파일은 나중에 조회
-		return ptMapper.getPtMain(ptCode);
+		return ptMapper.getPtMain(manageCode);
 	}
 
 	@Override
-	public PreFileDTO getPtMainFile(String ptCode) throws Exception {
+	public PreFileDTO getPtMainFile(String manageCode) throws Exception {
 		// TODO Auto-generated method stub
-		return ptMapper.getPtMainFile(ptCode);
+		return ptMapper.getPtMainFile(manageCode);
 	}
-	
+
+	//설문 등록 SurveyDTO 
+	@Override
+	public int insertSurveyDTO(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.insertSurveyDTO(sDTO);
+	}
+/*
+	@Override
+	public int insertSurveyTitleDTO(SurveyTitleDTO svtDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.insertSurveyTitleDTO(svtDTO);
+	}
+	*/
+
+	@Override
+	public int insertSurveyTitleDTO(List<SurveyDTO> sList) throws Exception {
+		// TODO Auto-generated method stub
+		
+		return ptMapper.insertSurveyTitleDTO(sList);
+	}
+
+	@Override
+	public List<SurveyDTO> getSurveyView(SurveyDTO svtDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getSurveyView(svtDTO);
+	}
+
+	@Override
+	public int getSurveyCount(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getSurveyCount(sDTO);
+	}
+
+	@Override
+	public List<SurveyDTO> getSurveyAudView(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getSurveyAudView(sDTO);
+	}
+
+	@Override
+	public int insertSurveyAnsAud(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.insertSurveyAnsAud(sDTO);
+	}
 
 }

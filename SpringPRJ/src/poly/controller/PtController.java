@@ -28,11 +28,12 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import poly.dto.ManagePresentationDTO;
-import poly.dto.NoticeDTO;
 import poly.dto.PreFileDTO;
 import poly.dto.QuestionDTO;
-import poly.service.INoticeService;
+import poly.dto.SurveyDTO;
 import poly.service.IPtService;
+import poly.service.IQuestionService;
+import poly.service.impl.UserService;
 import poly.util.CmmUtil;
 import poly.util.PPTtoPDFConverter;
 
@@ -46,7 +47,8 @@ public class PtController {
 	private Logger log = Logger.getLogger(this.getClass());
 	@Resource(name="PtService")
 	private IPtService ptService;
-	
+	@Resource(name="QuestionService")
+	private IQuestionService questionService;
 	String filePath="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\";
 
 	
@@ -167,14 +169,14 @@ public class PtController {
 	@RequestMapping(value="/ptMain.do")
 	public String getPtMain(HttpServletRequest req , HttpServletResponse resp,Model model) throws Exception{
 		log.info(this.getClass()+"ptMain start");
-		String ptCode=req.getParameter("ptCode");
-		log.info(ptCode);
+		String manageCode=CmmUtil.nvl(req.getParameter("manageCode"));
+		log.info(manageCode);
 		//발표 글,자료 조회
 		ManagePresentationDTO mpDTO = new ManagePresentationDTO();
 		ManagePresentationDTO mpDTO2 = new ManagePresentationDTO();
 		PreFileDTO pfDTO=new PreFileDTO();
-		mpDTO=ptService.getPtMain(ptCode);
-		pfDTO=ptService.getPtMainFile(ptCode);
+		mpDTO=ptService.getPtMain(manageCode);
+		pfDTO=ptService.getPtMainFile(manageCode);
 		//발표번호에 맞는 방 생성자 번호
 		log.info(mpDTO.getManageTitle());
 		log.info(mpDTO.getManageContent());
@@ -193,11 +195,243 @@ public class PtController {
 		log.info(this.getClass()+"ptMain end");
 		return "/pt/ptMain";
 	}
-	//투표 / 설문 클릭시 화면
+	
+	//발표 메인화면 
+	@RequestMapping(value="/ptMain2.do")
+	public String getPtMain2(HttpServletRequest req , HttpServletResponse resp,Model model) throws Exception{
+		log.info(this.getClass()+"ptMain start");
+		String manageCode=CmmUtil.nvl(req.getParameter("manageCode"));
+		log.info(manageCode);
+		//발표 글,자료 조회
+		ManagePresentationDTO mpDTO = new ManagePresentationDTO();
+		ManagePresentationDTO mpDTO2 = new ManagePresentationDTO();
+		PreFileDTO pfDTO=new PreFileDTO();
+
+		mpDTO=ptService.getPtMain(manageCode);
+		pfDTO=ptService.getPtMainFile(manageCode);
+		
+		//발표번호에 맞는 방 생성자 번호
+		
+		
+		
+		//전체 질문 조회
+		QuestionDTO qDTO = new QuestionDTO();
+		qDTO.setManageCode(manageCode);
+		List<QuestionDTO> qList = questionService.getQuestionAll(qDTO);
+		
+		//글 , 자료를 model 객체에 저장
+		model.addAttribute("mpDTO",mpDTO);
+		model.addAttribute("mpDTO2",mpDTO2);
+		model.addAttribute("pfDTO",pfDTO);
+		model.addAttribute("qList",qList);
+		
+		//초기화
+		mpDTO=null;
+		mpDTO2=null;
+		pfDTO=null;
+		qDTO=null;
+		qList=null;
+		log.info(this.getClass()+"ptMain end");
+		return "/pt/ptMain2";
+	}
+	@RequestMapping(value="/ptMain3.do")
+	public String getPtMain3(HttpServletRequest req , HttpServletResponse resp,Model model) throws Exception{
+		String manageCode= req.getParameter("manageCode");
+		String svAnsOptType=req.getParameter("svAnsOptType");
+		SurveyDTO sDTO =new SurveyDTO();
+		List<SurveyDTO> sList =new ArrayList<>();
+		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);
+		
+		sList=ptService.getSurveyView(sDTO);
+		String msg="y";
+		if(sList==null){
+			msg="n";
+			model.addAttribute("msg",msg);
+		}
+		
+		model.addAttribute("sList",sList);
+		model.addAttribute("msg",msg);
+		
+		
+		return "/pt/ptMain3";
+				
+	}
+	
+	
+	
+/*	//투표 / 설문 클릭시 화면
 	@RequestMapping(value="/pt/ptMainVoteSurvey.do")
 	public String getPtMainVoteSurvey() throws Exception{
 		return "/pt/ptMainVoteSurvey";
 	}
+*/
+	//설문지 등록 
+	@RequestMapping(value="/pt/surveyInsert")
+	public @ResponseBody HashMap<String,Object> insertSurvey(HttpServletRequest req) throws Exception{
+		String surveyTitle=CmmUtil.nvl(req.getParameter("surveyTitle"));
+		String surveyQuestion=CmmUtil.nvl(req.getParameter("surveyQuestion"));
+		String surveyQuestion1="";
+		String surveyQuestion2="";
+		String surveyTitleQ="";
+		String surveyRegister=CmmUtil.nvl(req.getParameter("surveyRegister"));
+		String manageCode=CmmUtil.nvl(req.getParameter("manageCode"));
+		String regNo=CmmUtil.nvl(req.getParameter("regNo"));
+		String svAnsOptType=req.getParameter("svAnsOptType");
+		
+		
+		//surveyDTO
+		SurveyDTO sDTO= new SurveyDTO();
 
+		sDTO.setSurveyTitle(surveyTitle);
+		sDTO.setSurveyRegister(surveyRegister);
+		sDTO.setRegNo(regNo);
+		sDTO.setManageCode(manageCode);
+		
+		//sList
+		List<SurveyDTO> sList=new ArrayList<>();
+		//HashMap
+		HashMap<String,Object> hMap = new HashMap<>();
+		//surveyTitle
+		SurveyDTO svtDTO=new SurveyDTO();
+		SurveyDTO svtDTO1=new SurveyDTO();
+		SurveyDTO svtDTO2=new SurveyDTO();
+		
+	
+		
+		
+		int count=0;
+		//설문 투표 등록은 한개씩
+		count=ptService.getSurveyCount(sDTO);
+		log.info(count);
+		
+		int result2=0;
+		if(count<1) {
+			
+		//surveyDTO 등록 
+		int result=ptService.insertSurveyDTO(sDTO);
+		log.info(result);
+		//셀렉트키로 뽑아온 svNo
+		String surveyNo=sDTO.getSurveyNo();
+		
+		if(req.getParameter("surveyQuestion1")!=null&&req.getParameter("surveyQuestion2")==null) {
+			 surveyQuestion1=CmmUtil.nvl(req.getParameter("surveyQuestion1"));
+			 
+			 svtDTO.setSurveyNo(surveyNo);
+			 svtDTO.setSurveyTitleQ(surveyQuestion);
+			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO);
+			 svtDTO1.setSurveyNo(surveyNo);
+			 svtDTO1.setSurveyTitleQ(surveyQuestion1);
+			 svtDTO1.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO1);
+			 
+		}else if(req.getParameter("surveyQuestion1")!=null&&req.getParameter("surveyQuestion2")!=null) {
+			 surveyQuestion1=CmmUtil.nvl(req.getParameter("surveyQuestion1"));
+			 surveyQuestion2=CmmUtil.nvl(req.getParameter("surveyQuestion2"));
+			 svtDTO.setSurveyNo(surveyNo);
+			 svtDTO.setSurveyTitleQ(surveyQuestion);
+			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO);
+			 svtDTO1.setSurveyNo(surveyNo);
+			 svtDTO1.setSurveyTitleQ(surveyQuestion1);
+			 svtDTO1.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO1);
+			 svtDTO2.setSurveyNo(surveyNo);
+			 svtDTO2.setSurveyTitleQ(surveyQuestion2);
+			 svtDTO2.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO2);
+			 
+		}else {
+			 svtDTO.setSurveyNo(surveyNo);
+			 svtDTO.setSurveyTitleQ(surveyQuestion);
+			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 sList.add(svtDTO);
+		}
+
+			
+		 result2=ptService.insertSurveyTitleDTO(sList);
+		 
+			sList=null;
+			svtDTO.setManageCode(manageCode);
+			svtDTO.setSurveyAnsOptType(svAnsOptType);
+			log.info(svtDTO.getManageCode());
+			log.info(svtDTO.getSurveyAnsOptType());
+			//등록후 ajax 에 데이터를 보여주기 위해 select 문으로 조회 해서 리스트에 저장
+			//일단 설문지는 리스트 형식으로 조회
+			sList=ptService.getSurveyView(svtDTO);
+			
+			log.info(sList);
+			String msg="n";
+			hMap.put("sList", sList);
+			hMap.put("msg",msg);
+		}else {
+			String msg="y";
+			hMap.put("msg",msg);
+		}
+		
+		
+		
+		sDTO=null;
+		svtDTO=null;
+		svtDTO1=null;
+		svtDTO2=null;
+		
+		
+		return hMap;	
+	}
+	//설문지 화면 
+	@RequestMapping(value="/pt/surveyView")
+	public @ResponseBody List<SurveyDTO> getSurveyView(HttpServletRequest req) throws Exception{
+	
+		String manageCode=req.getParameter("manageCode");
+		String svAnsOptType=req.getParameter("svAnsOptType");
+	
+		//surveyDTO
+		SurveyDTO sDTO= new SurveyDTO();
+		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);
+		
+		
+		List<SurveyDTO> sList = new ArrayList<>();
+		
+		sList=ptService.getSurveyAudView(sDTO);
+		
+		return sList;
+	}
+	
+	//청중 설문지 등록
+	@RequestMapping(value="/pt/surveyAudReg",method=RequestMethod.POST)
+	public @ResponseBody int insertSurveyAud(HttpServletRequest req,@RequestParam(value="surveyAudVal",required=true) List<String> surveyAudVal,
+			@RequestParam(value="surveyTitleQ",required=true) List<String> surveyTitleQ,
+			@RequestParam(value="surveyTitleNo",required=true) List<String> surveyTitleNo) throws Exception{
+	log.info(this.getClass()+"start");
+	SurveyDTO sDTO=new SurveyDTO();
+	
+	String gender=req.getParameter("gender");
+	String age=req.getParameter("age");
+	String svAnsOptType=req.getParameter("svAnsOptType");
+	
+	
+	int result=0;
+		sDTO.setSurveyAnsAudGender(gender);
+		sDTO.setSurveyAnsAudAge(age);
+		
+		sDTO.setSurveyAnsOptType(svAnsOptType);
+	for(int i = 0 ;i<surveyAudVal.size();i++) {
+		sDTO.setSurveyTitleNo(surveyTitleNo.get(i));
+		sDTO.setSurveyAnsOptValue(surveyAudVal.get(i));
+		sDTO.setSurveyTitleQ(surveyTitleQ.get(i));
+		
+		result=ptService.insertSurveyAnsAud(sDTO);
+		if(result!=1) {
+			return 0;
+		}
+	}
+	log.info(this.getClass()+"end");
+		
+		return result;
+	}
+	
 	
 }

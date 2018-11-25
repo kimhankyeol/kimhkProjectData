@@ -146,4 +146,25 @@ public class UserController {
 			
 			return "redirect:/home.do";
 		}
+		
+		
+		//id 찾기 
+		@RequestMapping(value="/idFind")
+		public @ResponseBody String idFind(HttpServletRequest req) throws Exception{
+			String name=req.getParameter("name");
+			log.info(name);
+			String tel=req.getParameter("tel");
+			log.info(tel);
+			
+			UserDTO uDTO =new UserDTO();
+			uDTO.setUserName(name);
+			uDTO.setTel(tel);
+			
+			String result = userService.getIdFind(uDTO);
+			
+			log.info(result);
+			
+			return result;
+		}
+		
 }

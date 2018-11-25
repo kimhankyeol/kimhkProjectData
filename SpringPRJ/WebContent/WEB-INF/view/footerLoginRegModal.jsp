@@ -112,6 +112,67 @@
 				      </div>
 				  </div>
 		    </div>
-		    <!-- 이메일이 중복이면  유효성 검사를 통해 안넘어가게 -->
-								<input type="hidden" id="conf"value="0"/>
+		    <!-- 아이디 중복체크 확인하는 변수 -->
+		    <input type="hidden" id="conf" value="0"/>
+		    
+		    <!-- 아이디 찾기/ 비밀번호 찾기 -->
+		    	<div class="container">
+				 <div class="modal fade login" id="findModal">
+				      <div class="modal-dialog login animated">
+		    		      <div class="modal-content">
+		    		         <div class="modal-header">
+		                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                        <h4 class="modal-title">ID/PW FIND</h4>
+		                    </div>
+		                    <div class="modal-body">  
+		                        <div class="box">
+		                             <div class="content">
+		                               <!-- 아이디 찾기 --> 
+		                                 <div class="division">
+		                                    <div class="line l"></div>
+		                                      <span>아이디 찾기</span>
+		                                    <div class="line r"></div>
+		                                </div>
+		                                <!--  1번 방법 그냥 ajax 를 쓰는 것 2번 form에다가 담아서 ajax form  -->
+		                                
+		                             
+		                                <div class="form loginBox">
+		                                    <input  class="form-control" type="text" placeholder="이름을 입력하세요" id="idName">
+		                                    <input  class="form-control" type="text" placeholder="전화번호" id="idTel">
+			                                <a type="button" class="btn btn-primary" onclick="javascript:idFind()" >아이디 찾기</a>
+		                                </div>
+		                            
+		                                <!--비밀번호 찾기  -->
+		                                <div class="division">
+		                                    <div class="line l"></div>
+		                                      <span>비밀번호 찾기</span>
+		                                    <div class="line r"></div>
+		                                </div>
+		                    
+		                                <div class="form loginBox">
+		                                    <input  class="form-control" type="text" placeholder="이메일을 입력하세요" id="pwEmail">
+		                                    <input  class="form-control" type="text" placeholder="이름을 입력하세요" id="pwName">
+		                                    <input  class="form-control" type="text" placeholder="전화번호" id="pwTel">
+			                                 <a type="button" class="btn btn-primary" onclick="javascript:pwFind()" >비밀번호 찾기</a>
+		                                </div>
+		                            
+		                             </div>
+		                        </div>
+		                       
+		                    </div>
+		                    <div class="modal-footer">
+		                        <div class="forgot login-footer">
+		                            <span>Looking to 
+		                                 <a href="javascript: showRegisterForm();">create an account</a>
+		                            ?</span>
+		                        </div>
+		                        <div class="forgot register-footer" style="display:none">
+		                             <span>Already have an account?</span>
+		                             <a href="javascript: showLoginForm();">Login</a>
+		                        </div>
+		                    </div>        
+		    		      </div>
+				      </div>
+				  </div>
+		    </div>
 	

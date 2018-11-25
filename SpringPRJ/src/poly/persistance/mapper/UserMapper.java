@@ -12,6 +12,8 @@ public interface UserMapper {
 	public int getUserEmailCheck(String email) throws Exception;
 	//로그인
 	public UserDTO getUserLogin(UserDTO uDTO) throws Exception;
+	//아이디 찾기
+	public String getIdFind(UserDTO uDTO) throws Exception;
 
 	
 }

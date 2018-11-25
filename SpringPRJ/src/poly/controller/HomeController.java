@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute.Use;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -34,6 +35,9 @@ public class HomeController {
 	@RequestMapping(value="home")
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session) throws Exception{
 		
+		
+		
+		//count 
 		System.out.println("home");
 		return "/home";
 	}

@@ -103,5 +103,84 @@
 	SET FILE_NO=#{fileNo}
 	WHERE MANAGE_NO=#{manageNo}
 	</update>
-
+	<!-- 설문 등록 surveyDTO -->
+	<insert id="insertSurveyDTO" parameterType="SurveyDTO">
+	INSERT INTO 
+	SURVEY (SURVEY_TITLE,SURVEY_REGISTER,REGNO,REGDATE,MANAGE_CODE)
+	VALUES (#{surveyTitle},#{surveyRegister},#{regNo},now(),#{manageCode})
+	<selectKey  resultType="string" keyProperty="surveyNo" order="AFTER" >
+		SELECT last_insert_id() FROM DUAL;
+	</selectKey> 
+	</insert>
+	<!-- 설문등록 surveyTitleDTO -->
+	<insert id="insertSurveyTitleDTO" parameterType="map">
+	INSERT INTO 
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE)
+	VALUES 
+		<foreach collection="list" item="item" separator="," >
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType})
+		</foreach>
+		
+	</insert>
+	<!--등록후 설문 보여주기 -->
+	<select id="getSurveyView" parameterType="SurveyDTO" resultType="SurveyDTO">
+	SELECT 
+		S.SURVEY_NO AS surveyNo,
+		S.SURVEY_TITLE AS surveyTitle,
+		S.SURVEY_REGISTER AS surveyRegister,
+		S.REGNO AS regNo,
+		S.REGDATE AS regDate,
+		S.MANAGE_CODE AS manageCode,
+		SVT.SV_T_NO AS surveyTitleNo,
+		SVT.SV_T_QTITLE AS surveyTitleQ,
+		MP.MANAGE_TITLE AS manageTitle
+	FROM SURVEY S 
+	INNER JOIN MANAGE_PRESENTATION MP
+	ON S.MANAGE_CODE=MP.MANAGE_CODE AND S.MANAGE_CODE=#{manageCode}
+    INNER JOIN SV_TITLE SVT
+    ON S.SURVEY_NO=SVT.SURVEY_NO AND SVT.SV_ANS_OPT_TYPE=#{surveyAnsOptType}
+	</select>
+	<!-- <select id="getSurveyView" parameterType="SurveyDTO" resultType="SurveyDTO">
+	SELECT S.SURVEY_NO AS surveyNo,S.SURVEY_TITLE AS surveyTitle,S.SURVEY_REGISTER AS surveyRegister,S.REGNO AS regNo,S.REGDATE AS regDate,S.MANAGE_CODE AS manageCode,SVT.SV_T_NO AS surveyTitleNo,SVT.SV_T_QTITLE AS surveyTitleQ,SVT.SV_ANS_OPT_TYPE AS surveyAnsOptType 
+	FROM SURVEY S
+	INNER JOIN SV_TITLE SVT
+	ON S.SURVEY_NO=#{surveyNo}
+	</select> -->
+	<!-- 설문지는 1개만  -->
+	<select id="getSurveyCount" parameterType="SurveyDTO" resultType="int">
+	SELECT COUNT(SURVEY_NO)
+	FROM SURVEY
+	WHERE REGNO = #{regNo}
+	</select>
+	<!-- 청중 설문 보여주기 -->
+	<select id="getSurveyAudView" parameterType="SurveyDTO" resultType="SurveyDTO">
+	SELECT 
+		S.SURVEY_NO AS surveyNo,
+		S.SURVEY_TITLE AS surveyTitle,
+		S.SURVEY_REGISTER AS surveyRegister,
+		S.REGNO AS regNo,
+		S.REGDATE AS regDate,
+		S.MANAGE_CODE AS manageCode,
+		SVT.SV_T_NO AS surveyTitleNo,
+		SVT.SV_T_QTITLE AS surveyTitleQ,
+		MP.MANAGE_TITLE AS manageTitle
+	FROM SURVEY S 
+	INNER JOIN MANAGE_PRESENTATION MP
+	ON S.MANAGE_CODE=MP.MANAGE_CODE AND S.MANAGE_CODE=#{manageCode}
+    INNER JOIN SV_TITLE SVT
+    ON S.SURVEY_NO=SVT.SURVEY_NO AND SVT.SV_ANS_OPT_TYPE=#{surveyAnsOptType}
+	
+	</select>
+	<!-- 청중 설문 등록 -->
+	<insert id="insertSurveyAnsAud" parameterType="SurveyDTO">
+	INSERT INTO SV_ANS_AUD
+	 (
+	 SV_ANS_AUD_GENDER,SV_ANS_AUD_AGE,SV_ANS_OPT_TYPE,SV_ANS_OPT_VALUE,REGDATE,SV_T_NO
+	 )
+	VALUES
+	(
+	#{surveyAnsAudGender},#{surveyAnsAudAge},#{surveyAnsOptType},#{surveyAnsOptValue},now(),#{surveyTitleNo}
+	)
+	
+	</insert> 
 </mapper>

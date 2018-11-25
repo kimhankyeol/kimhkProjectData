@@ -42,4 +42,12 @@
 	
 	
 	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="getIdFind" parameterType="UserDTO" resultType="string">
+	SELECT EMAIL
+	FROM USER
+	WHERE USERNAME=#{userName} AND TEL=#{tel}
+	
+	</select>
 </mapper>

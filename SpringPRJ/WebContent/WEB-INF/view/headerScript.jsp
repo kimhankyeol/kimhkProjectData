@@ -315,11 +315,11 @@
 	<script>
 
 		//로그인 ////////////////////////////////
-		function login(){	
+	/* 	function login(){	
 			 openLoginModal();
 			
 			};
-			
+			 */
 	
 		function showLoginForm(){
 		    $('#loginModal .registerBox').fadeOut('fast',function(){
@@ -328,7 +328,7 @@
 		            $('.login-footer').fadeIn('fast');    
 		        });
 		        
-		        $('.modal-title').html('Login with');
+		       
 		    });       
 		     $('.error').removeClass('alert alert-danger').html(''); 
 		}
@@ -348,7 +348,7 @@
 			            $('.login-footer').fadeIn('fast');    
 			        });
 			        
-			        $('.modal-title').html('Register with');
+			       
 			    });       
 			     $('.error').removeClass('alert alert-danger').html(''); 
 		}
@@ -358,10 +358,57 @@
 		        $('#registerModal').modal('show');    
 		    }, 230);
 		}
+		
+		////////////////////////////////////////
+		//find id email
+	
+		function openFindModal(){
+			showFindForm();
+			 setTimeout(function(){
+			    $('#findModal').modal('show');    
+			    }, 230);
+			}
+		function showFindForm(){
+			 $('#findModal .registerBox').fadeOut('fast',function(){
+			        $('.registerBox').fadeIn('fast');
+			        $('.register-footer').fadeOut('fast',function(){
+			            $('.login-footer').fadeIn('fast');    
+			        });
+			        
+			       
+			    });       
+			     $('.error').removeClass('alert alert-danger').html(''); 
+		}
 		///로그아웃
 		function logout(){
 			alert("로그아웃 하셨습니다.")
 			location.href = "/user/logout.do"
-		}		
+		}	
+		
+		/////////////////////////////////////
+		//id찾기 ajax 
+		function idFind(){
+			var name=$('#idName').val();
+			var tel=$('#idTel').val();
+			$.ajax({
+				url:"/idFind.do",
+				method:"post",
+				data:{
+					"name":name,
+					"tel":tel
+				},
+				success:function(data){
+					console.log(data)
+				},
+				error:function(){
+					alert("에러발생")
+				}
+			})
+			
+			
+		}
+		
+		
+		
 	</script>
     
