@@ -31,9 +31,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class PPTtoPDFConverter{
 	
-	public static String PPTtoPDFConverter(String fileName) throws IOException,DocumentException, InvalidFormatException {
+	public static String PPTtoPDFConverter(String fileName,String email) throws IOException,DocumentException, InvalidFormatException {
 		System.out.println("start");
-		String filePath="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\";	
+		String filePath="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\"+email+"\\";	
 		FileInputStream inputStream = new FileInputStream(filePath+fileName);
 		XMLSlideShow ppt=new XMLSlideShow(OPCPackage.open(inputStream));
 		inputStream.close();
@@ -58,7 +58,7 @@ public class PPTtoPDFConverter{
             graphics.clearRect(0, 0, width, height);
             graphics.scale(scale, scale);
             slide.draw(graphics);
-            FileOutputStream out = new FileOutputStream("C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\"+fileName+i+".png");
+            FileOutputStream out = new FileOutputStream("C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\"+email+"\\"+fileName+i+".png");
             javax.imageio.ImageIO.write(img, "png", out);
             out.close();
             i++;
@@ -79,7 +79,6 @@ public class PPTtoPDFConverter{
 		
 		
 		document.open();
-		System.out.println("pdf위치"+pdfFileName);
 		for(int j =1;j<= ppt.getSlides().length;j++ ) {
 			String imagePath=filePath+fileName+j+".png";
 			Image image = Image.getInstance(imagePath);

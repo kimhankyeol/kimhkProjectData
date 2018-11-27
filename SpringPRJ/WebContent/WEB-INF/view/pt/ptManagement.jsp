@@ -1,5 +1,9 @@
+<%@page import="poly.util.DateUtil"%>
+<%@page import="poly.dto.SurveyDTO"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<% List<SurveyDTO> sList = (List<SurveyDTO>)request.getAttribute("sList"); %>
 <html>
 <head>
 
@@ -25,57 +29,11 @@
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
+    <!-- dataTable -->
+    
+    <link rel="stylesheet" href="/css/dataTables.min.css"/>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-<!-- 	<style>
-	.comments {
-    margin: 0 auto;
-    width: 100%;
-    border-left: 2px solid #CCC;
-    padding: 0 20px 0 30px
-}
-
-.timeP{
-    background-color: #FFF;
-    padding: 10px;
-    font-size: 16px;
-    font-family: Tahoma, Arial;
-    border: 1px solid #CCC;
-    line-height: 1.7;
-    position: relative
-}
-
-.timeP:before {
-    content: "";
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #2c3e50;
-    border: 3px solid #CCC;
-    position: absolute;
-    top: 10px;
-    left: -40px
-}
-
-.timeP:after {
-    content: "";
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-color: transparent #CCC transparent transparent;
-    border-width: 8px;
-    position: absolute;
-    left: -17px;
-    top: 10px
-}
-	
-	</style> -->
 	<style>
 	.timelineP {
   list-style: none;
@@ -226,7 +184,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Audience Interaction System</a>
+                <a class="navbar-brand" href="/home.do">Audience Interaction System</a>
             </div>
        
 
@@ -235,10 +193,10 @@
                     <ul class="nav in" id="side-menu">
                    
                         <li>
-                            <a href="/pt/ptManagement.do" class="active"><i class="fa fa-dashboard fa-fw"></i> 발표 관리</a>
+                            <a href="/pt/ptManagement.do?userNo=<%=session.getAttribute("userNo") %>" class="active"><i class="fa fa-dashboard fa-fw"></i> 발표 관리</a>
                         </li>
                         <li>
-                            <a href="#" ><i class="fa fa-bar-chart-o fa-fw"></i>빅데이터 분석 차트<span class="fa arrow"></span></a>
+                            <a style="cursor:pointer"><i class="fa fa-bar-chart-o fa-fw"></i>빅데이터 분석 차트<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level collapse">
                                 <li>
                                     <a href="flot.html">Flot Charts</a>
@@ -250,10 +208,10 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-th-list  fa-fw"></i> 발표 리스트</a>
+                            <a style="cursor:pointer" onclick="javascript:ptListView()"><i class="fa fa-th-list  fa-fw"></i> 발표 리스트</a>
                         </li>
                          <li>
-                            <a href="form.html"><i class="fa fa-book  fa-fw"></i> 설문지 관리</a>
+                            <a style="cursor:pointer" href="form.html"><i class="fa fa-book  fa-fw"></i> 설문지 관리</a>
                         </li>
                     </ul>
                 </div>
@@ -263,13 +221,15 @@
         </nav>
 	
         <div id="page-wrapper" style="min-height: 651px;">
-        
+         <div id="ptManageList">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">발표 관리</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            
+           
             <!-- /.row -->
             <div class="row">
                 <div class="col-md-6">
@@ -280,18 +240,22 @@
                                     <i class="fa fa-comments fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">5</div>
+                                <% if(sList==null){ %>
+                                    <div class="huge">0</div>
+                                <% }else{ %>
+                                	 <div class="huge"><%=sList.size()%></div>
+                                <%} %>
                                     <div>운영중인 발표</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a style="cursor:pointer">
                             <div class="panel-footer">
-                                <span class="pull-left">발표방 보러가기</span>
+                                <span class="pull-left" onclick="javascript:ptListView()">발표방 보러가기</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                 <div class="clearfix"></div>
                             </div>
-                        </a>
+                    	</a>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -307,7 +271,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a style="cursor:pointer">
                             <div class="panel-footer">
                                 <span class="pull-left">빅데이터 분석보러가기</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -317,6 +281,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
@@ -330,57 +295,64 @@
 					</div>
 			          -->
                     <div class="container">
-    <div class="page-header">
-        <h1 id="timelineP">김한결님의 TimeLine</h1>
-    </div>
-    <ul class="timelineP">
-    <!-- 짝수번째는 오른쪽 invert -->
-        <li>
-          <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
-          <div class="timelineP-panel">
-            <div class="timelineP-heading">
-              <h4 class="timelineP-title" >학술대회 논문대회 김한결 발표</h4>
-              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 2018/10/20 10:05:23</small></p>
-            </div>
-            <div class="timelineP-body">
-              <p> nosql.ppt 14.3MB</p>
-            </div>
-          </div>
-        </li>
-        <li class="timelineP-inverted">
-         <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
-          <div class="timelineP-panel">
-            <div class="timelineP-heading">
-              <h4 class="timelineP-title" >학술대회 논문대회 송진수 발표</h4>
-              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 2018/10/20 10:04:20</small></p>
-            </div>
-            <div class="timelineP-body">
-              <p> 송진수 스플렁크.ppt 14.3MB</p>
-            </div>
-          </div>
-        </li>
-       <li>
-          <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
-          <div class="timelineP-panel">
-            <div class="timelineP-heading">
-              <h4 class="timelineP-title" >학술대회 논문대회 황윤영 발표</h4>
-              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 2018/10/20 10:03:10</small></p>
-            </div>
-            <div class="timelineP-body">
-              <p> 황윤영 스톰.ppt 14.3MB</p>
-            </div>
-          </div>
-        </li>
-       
-       
-    </ul>
-</div>
+					    <div class="page-header">
+					        <h1 id="timelineP"><%=session.getAttribute("name") %>님의 TimeLine</h1>
+					    </div>
+					    <ul class="timelineP">
+					    <!-- 짝수번째는 오른쪽 invert -->
+					    <% if(sList.size()==0){%>
+					    	 <li>
+					          <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
+					          <div class="timelineP-panel">
+					            <div class="timelineP-heading">
+					              <h4 class="timelineP-title" >등록된 발표가 없습니다.</h4>
+					            </div>
+					            <div class="timelineP-body">
+					            </div>
+					          </div>
+					        </li>
+					    <%}else{ %>
+					     <% for(int i = 0 ; i<sList.size(); i++) {%>
+					     	<% if(i%2==0) {%>
+					     	 <li >
+					          <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
+					          <div class="timelineP-panel">
+					            <div class="timelineP-heading">
+					              <h4 class="timelineP-title" ><a href="/ptMain.do?manageCode=<%=sList.get(i).getManageCode()%>"><%=sList.get(i).getManageTitle() %></a></h4>
+					              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i><%=DateUtil.DateFormatter(sList.get(i).getRegDate())%></small></p>
+					            </div>
+					            <div class="timelineP-body">
+					              <p> <%=sList.get(i).getFileOrgName()%> - <%=sList.get(i).getFileSize()%> MB</p>
+					            </div>
+					          </div>
+					        </li>
+					     	<%}else if(i%2!=0){ %>
+					      <li class="timelineP-inverted">
+					          <div class="timelineP-badge"><i class="glyphicon glyphicon-check"></i></div>
+					          <div class="timelineP-panel">
+					            <div class="timelineP-heading">
+					              <h4 class="timelineP-title" ><a href="/ptMain.do?manageCode=<%=sList.get(i).getManageCode()%>"><%=sList.get(i).getManageTitle() %></a></h4>
+					              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i><%=DateUtil.DateFormatter(sList.get(i).getRegDate())%></small></p>
+					            </div>
+					            <div class="timelineP-body">
+					              <p> <%=sList.get(i).getFileOrgName() %> - <%=sList.get(i).getFileSize()%> MB</p>
+					            </div>
+					          </div>
+					        </li>
+					     	<%} %>
+					    	
+					    <%} %>
+					   <%} %>
+					       
+					    </ul>
+					</div>
                 </div>
                 <!-- /.col-lg-12 -->
 
 
             </div>
             <!-- /.row -->
+           </div>
         </div>
         <!-- /#page-wrapper -->
 
@@ -402,8 +374,26 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/dist/js/sb-admin-2.js"></script>
+    <!-- dataTable -->
+	<script src="/js/jquery.dataTables.min.js"></script>
 
-
+	<script>
+	function ptListView(){
+		$.ajax({
+			url:"/ptManagement/ptList.do?userNo=<%=session.getAttribute("userNo")%>",
+			method:"post",
+			dataType:'text',
+			success:function(data){
+					$('#ptManageList').html(data);
+				
+			},
+			error:function(){
+				
+			}
+		})
+	}
+	
+	</script>
 
 
 </body>

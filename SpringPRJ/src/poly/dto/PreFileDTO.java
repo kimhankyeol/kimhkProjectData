@@ -8,13 +8,28 @@ public class PreFileDTO {
 	private String filePath;
 	private String manageCode;
 	private String manageNo;
+	private String fileSize;
 	private String regNo;
 	private String regDate;
 	private String updNo;
 	private String updDate;
+/*	private String filePdfPath;
+	
+	
 
-	
-	
+
+	public String getFilePdfPath() {
+		return filePdfPath;
+	}
+	public void setFilePdfPath(String filePdfPath) {
+		this.filePdfPath = filePdfPath;
+	}*/
+	public String getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
+	}
 	public String getManageNo() {
 		return manageNo;
 	}

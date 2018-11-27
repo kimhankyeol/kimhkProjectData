@@ -36,6 +36,7 @@
 	FILE_ORGNAME,
 	FILE_SERVERNAME,
 	FILE_PATH,
+	FILE_SIZE,
 	REGNO,
 	REGDATE,
 	MANAGE_CODE,
@@ -45,6 +46,7 @@
 	#{fileOrgName},
 	#{fileServerName},
 	#{filePath},
+	#{fileSize},
 	#{regNo},
 	now(),
 	#{manageCode},
@@ -66,19 +68,20 @@
 	<!-- 코드번호 입력후 발표 글 조회  -->
 	<select id="getPtMain" parameterType="string" resultType="ManagePresentationDTO">
 		SELECT 
-			MANAGE_NO AS manageNo,
-			MANAGE_TITLE AS manageTitle,
-			MANAGE_CONTENT AS manageContent,
-			MANAGE_CODE AS manageCode,
-			REGNO AS regNo,
-			REGDATE AS regDate,
-			UPDDATE AS updDate,
-			FILE_NO AS fileNo,
-			DOWNCK AS downCk
+			M.MANAGE_NO AS manageNo,
+			M.MANAGE_TITLE AS manageTitle,
+			M.MANAGE_CONTENT AS manageContent,
+			M.MANAGE_CODE AS manageCode,
+			M.REGNO AS regNo,
+			M.REGDATE AS regDate,
+			M.UPDDATE AS updDate,
+			M.FILE_NO AS fileNo,
+			M.DOWNCK AS downCk,
+			U.EMAIL AS email
 		FROM
-			MANAGE_PRESENTATION
+			MANAGE_PRESENTATION M ,USER U
 		WHERE
-			MANAGE_CODE=#{manageCode}
+			M.MANAGE_CODE=#{manageCode} AND M.REGNO=U.USER_NO
 	</select>
 	<!-- 발표 파일 조회 -->
 	<select id="getPtMainFile" parameterType="string" resultType="PreFileDTO">
@@ -101,7 +104,7 @@
 	UPDATE
 	MANAGE_PRESENTATION
 	SET FILE_NO=#{fileNo}
-	WHERE MANAGE_NO=#{manageNo}
+	WHERE MANAGE_No=#{manageNo}
 	</update>
 	<!-- 설문 등록 surveyDTO -->
 	<insert id="insertSurveyDTO" parameterType="SurveyDTO">
@@ -182,5 +185,50 @@
 	#{surveyAnsAudGender},#{surveyAnsAudAge},#{surveyAnsOptType},#{surveyAnsOptValue},now(),#{surveyTitleNo}
 	)
 	
-	</insert> 
+	</insert>
+	
+	<!-- 발표 관리 조회 --> 
+	
+	<select id="getPtManageMent" parameterType="string" resultType="SurveyDTO">
+	SELECT MP.MANAGE_TITLE AS manageTitle,MP.MANAGE_CONTENT AS manageContent,MP.DOWNCK AS downCk,MP.MANAGE_CODE AS manageCode,MP.REGDATE AS regDate,PF.FILE_SIZE AS fileSize,PF.FILE_ORGNAME AS fileOrgName
+	FROM MANAGE_PRESENTATION MP 
+	INNER JOIN PRE_FILE PF
+	ON MP.MANAGE_CODE = PF.MANAGE_CODE AND MP.REGNO = #{userNo}
+	
+	</select>
+	<!-- 발표 삭제 -->
+	<delete id="deletePt" parameterType="SurveyDTO">
+	DELETE 
+	FROM MANAGE_PRESENTATION
+	WHERE MANAGE_CODE=#{manageCode} AND REGNO=#{regNo}
+	</delete> 
+	<!-- 설문지 삭제 -->
+	<delete id="deleteSurvey" parameterType="SurveyDTO">
+	
+	DELETE s.* , svt.*, saa.*
+	FROM SURVEY S , SV_TITLE SVT , SV_ANS_AUD SAA
+	WHERE S.SURVEY_NO = SVT.SURVEY_NO AND SVT.SV_T_NO = SAA.SV_T_NO AND S.MANAGE_CODE  = #{manageCode} AND S.REGNO=#{regNo};
+	
+	</delete>
+	
+	<!-- 파일 삭제 -->
+	<delete id="deleteFile" parameterType="SurveyDTO">
+	DELETE 
+	FROM PRE_FILE
+	WHERE MANAGE_CODE=#{manageCode} AND REGNO=#{regNo}
+	</delete>
+	
+	
+	<!-- 투표 등록-->
+	<!-- 설문등록 surveyTitleDTO -->
+	<insert id="insertVote" parameterType="map">
+	INSERT INTO 
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	VALUES 
+		<foreach collection="list" item="item" separator="," >
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		</foreach>
+		
+	</insert>
+	
 </mapper>

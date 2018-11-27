@@ -38,7 +38,7 @@
 						<%} else { %>
 							<li><a>Home</a></li>
 							<li><a>마이페이지</a></li>
-							<li><a>발표관리</a></li>
+							<li><a href="/pt/ptManagement.do?userNo=<%=userNo%>">발표관리</a></li>
 							<li><a><%=name %>님 안녕하세요</a> </li>
 							<li><a onclick="logout()">로그아웃</a></li>
 						<%} %>

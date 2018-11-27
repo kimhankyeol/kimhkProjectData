@@ -42,7 +42,8 @@ public class PtService implements IPtService{
 		mpDTO2.setManageNo(manageNo);
 		mpDTO2.setManageCode(unionManageCode);
 		// 코드번호 업데이트
-		int resultMP2=ptMapper.updateManageCode(mpDTO2);		
+		int resultMP2=ptMapper.updateManageCode(mpDTO2);	
+		
 	
 		PreFileDTO pfDTO=(PreFileDTO)hMap.get("pfDTO");
 		pfDTO.setManageNo(manageNo);
@@ -124,5 +125,40 @@ public class PtService implements IPtService{
 		// TODO Auto-generated method stub
 		return ptMapper.insertSurveyAnsAud(sDTO);
 	}
+	//발표관리  
+	@Override
+	public List<SurveyDTO> getPtManageMent(String userNo) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getPtManageMent(userNo);
+	}
+	//설문삭제
+	@Override
+	public int deleteSurvey(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.deleteSurvey(sDTO);
+	}
+	//발표 삭제
+	@Override
+	public int deletePt(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.deletePt(sDTO);
+	}
+	// 파일 삭제
+	@Override
+	public int deleteFile(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.deleteFile(sDTO);
+	}
+
+	//투표 등록
+	@Override
+	public int insertVote(List<HashMap<String,Object>> sList) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.insertVote(sList);
+	}
+
+	
+	
+	
 
 }

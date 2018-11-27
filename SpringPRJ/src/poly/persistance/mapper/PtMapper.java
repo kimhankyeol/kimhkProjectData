@@ -35,7 +35,17 @@ public interface PtMapper {
 	public List<SurveyDTO> getSurveyAudView(SurveyDTO sDTO);
 	//청중 설문 등록
 	public int insertSurveyAnsAud(SurveyDTO sDTO) throws Exception;
-
+	//발표관리 화면
+	public List<SurveyDTO> getPtManageMent(String userNo) throws Exception;
+	//설문 삭제
+	public int deleteSurvey(SurveyDTO sDTO) throws Exception;
+	//발표 삭제
+	public int deletePt(SurveyDTO sDTO) throws Exception;
+	//파일 삭제
+	public int deleteFile(SurveyDTO sDTO) throws Exception;
+	//투표 등록
+	public int insertVote(List<HashMap<String,Object>> sList) throws Exception;
+	
 
 
 

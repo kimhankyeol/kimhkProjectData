@@ -11,7 +11,16 @@ public class ManagePresentationDTO {
 	 private String regDate;
 	 private String updNo;
 	 private String updDate;
+	 private String email;
 	 
+	 
+	 
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getDownCk() {
 		return downCk;
 	}

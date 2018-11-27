@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itextpdf.text.SplitCharacter;
+import com.sun.net.httpserver.HttpServer;
+
 import poly.dto.ManagePresentationDTO;
 import poly.dto.PreFileDTO;
 import poly.dto.QuestionDTO;
@@ -49,8 +52,8 @@ public class PtController {
 	private IPtService ptService;
 	@Resource(name="QuestionService")
 	private IQuestionService questionService;
-	String filePath="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\";
-
+	
+	String filePathOrg="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\";
 	
 	//PT 등록하러가기 / 발표방생성
 	@RequestMapping(value="/pt/ptReg")
@@ -60,23 +63,34 @@ public class PtController {
 	}
 	//PT 관리창
 	@RequestMapping(value="/pt/ptManagement")
-	public String  getPtManagement(HttpServletRequest req, HttpServletResponse resp) throws Exception{
+	public String  getPtManagement(HttpServletRequest req, HttpServletResponse resp, Model model) throws Exception{
+		String userNo=req.getParameter("userNo");
+		log.info(userNo);
+		List<SurveyDTO> sList = new ArrayList<>();
+		sList= ptService.getPtManageMent(userNo);
+		
+		model.addAttribute("sList",sList);
 		return "/pt/ptManagement";
 		
 	}
-/*	//ppt to pdf convert 미리보기 클릭했을때
-	@RequestMapping(value="/convert/PPTtoPDF")
-	public @ResponseBody String convertPPTtoPDF(@RequestParam(value="filePT") MultipartFile file) throws Exception{
-		log.info(file.getOriginalFilename());
-		log.info(file.getBytes());
-		
-		return null;
-	}*/
+	
+	//pt 리스트 
+	@RequestMapping(value="/ptManagement/ptList")
+	public String getPtList(HttpServletRequest req, Model model) throws Exception{
+		String userNo=req.getParameter("userNo");
+		List<SurveyDTO> sList = new ArrayList<>();
+		sList= ptService.getPtManageMent(userNo);
+		model.addAttribute("sList",sList);
+		return "/pt/ptList";
+	}
+
 	//pt 글,파일 업로드
 	//pt  확장자명이 ppt ,pptx 인거 pdf 로 변경  80% 완료 컨버터 쪽 pdf 크기만 조정하면 될듯
 	@CrossOrigin
 	@RequestMapping(value="/ptReg/ptFileUpload",method=RequestMethod.POST)
-	public String ptRegTitleFile(@RequestParam(value="preFile") MultipartFile file,@RequestParam(value="preTitle") String preTitle,@RequestParam(value="preContent") String preContent,@RequestParam(value="downCkVal") String downCk,@RequestParam(value="userNo") String userNo ,Model model) throws Exception{
+	public String ptRegTitleFile(HttpSession session,@RequestParam(value="preFile") MultipartFile file,@RequestParam(value="preTitle") String preTitle,@RequestParam(value="preContent") String preContent,@RequestParam(value="downCkVal") String downCk,@RequestParam(value="userNo") String userNo ,Model model) throws Exception{
+		String email=(String)session.getAttribute("email");
+		String filePath=filePathOrg+email+"\\";
 		log.info(this.getClass()+"start pt title fileupload");
 		log.info("유저번호:"+userNo);
 		log.info("파일:"+file);
@@ -88,10 +102,11 @@ public class PtController {
 		log.info("제목:"+preTitle);
 		log.info("내용:"+preContent);
 		log.info("다운로드 여부 체크 "+ downCk);
-		//여기는 ppt to pdf converter
-		//
-		/*String pdfFileName=PPTtoPDFConverter.PPTtoPDFConverter(file.getOriginalFilename());
-		log.info("pdfFileName:"+pdfFileName);*/
+		
+	
+		float fileSize= (float)file.getSize()/1024/1024;
+
+	
 	
 		/////////////////////////////////
 		//글등록
@@ -125,16 +140,20 @@ public class PtController {
 		fileServerName=filePath+now+extended;//새로운 파일명으로 저장할 위치경로 + 시간 + 확장자 
 		String fileOrgNameLoc=filePath+fileOrgName;
 		File newFile =new File(fileOrgNameLoc);
+		if(!newFile.isDirectory()) {
+			newFile.mkdirs();
+		}
 		file.transferTo(newFile);//이 transferTo 는 MultiFile 에 내장된것/ 메소드를 사용해서 원하는 위치에 저장
 		//InputStream을 얻은 다음에 직접 처리를 해줘도 되지만 성능 좋고 편하니까 transferTo()
 		//데이터를 DTO에 세팅
 		PreFileDTO pfDTO= new PreFileDTO();
 		//ppt 파일을 pdf로
-		String pdfFileName=PPTtoPDFConverter.PPTtoPDFConverter(fileOrgName);
+		String pdfFileName=PPTtoPDFConverter.PPTtoPDFConverter(fileOrgName,email);
 		pfDTO.setFileOrgName(pdfFileName);
 		pfDTO.setFilePath(filePath);
 		pfDTO.setFileServerName(fileServerName);
 		pfDTO.setRegNo(userNo);
+		pfDTO.setFileSize(String.valueOf(fileSize));
 
 		//ppt 파일 삭제
 		
@@ -147,9 +166,11 @@ public class PtController {
 		int result=Integer.parseInt(hMap.get("resultMP1").toString())+Integer.parseInt(hMap.get("resultMP2").toString())+Integer.parseInt(hMap.get("resultMP3").toString())+Integer.parseInt(hMap.get("resultMP4").toString());
 		String msg="";
 		String url="";
+		
+		log.info("합산"+result);
 		if(result==4) {
 			msg="발표 글, 자료가 등록 되었습니다.";
-			url="redirect:/home.do";
+			url="/home.do";
 		}else {
 			msg="등록되지 않습니다.";
 			url="redirect:/home.do";
@@ -178,9 +199,6 @@ public class PtController {
 		mpDTO=ptService.getPtMain(manageCode);
 		pfDTO=ptService.getPtMainFile(manageCode);
 		//발표번호에 맞는 방 생성자 번호
-		log.info(mpDTO.getManageTitle());
-		log.info(mpDTO.getManageContent());
-		log.info(mpDTO.getManageCode());
 
 
 		//글 , 자료를 model 객체에 저장
@@ -266,6 +284,7 @@ public class PtController {
 		return "/pt/ptMainVoteSurvey";
 	}
 */
+
 	//설문지 등록 
 	@RequestMapping(value="/pt/surveyInsert")
 	public @ResponseBody HashMap<String,Object> insertSurvey(HttpServletRequest req) throws Exception{
@@ -411,6 +430,7 @@ public class PtController {
 	String gender=req.getParameter("gender");
 	String age=req.getParameter("age");
 	String svAnsOptType=req.getParameter("svAnsOptType");
+	log.info("429:"+svAnsOptType);
 	
 	
 	int result=0;
@@ -433,5 +453,239 @@ public class PtController {
 		return result;
 	}
 	
+	//설문 삭제
+	
+	@RequestMapping(value="/pt/ptDelete")
+	public String deleteSurvey(@RequestParam(value="manageCodeArr",required=true) List<String> manageCodeArr, HttpSession session,Model model) throws Exception{
+		String email=(String)session.getAttribute("email");
+	String filePath=filePathOrg+email+"\\";
+	log.info(this.getClass()+"start");
+
+	String userNo =(String)session.getAttribute("userNo");
+	String manageCode="";
+	int result=0;
+	int result2=0;
+	int result3=0;
+	SurveyDTO sDTO = new SurveyDTO();	
+	PreFileDTO pfDTO =new PreFileDTO();
+	sDTO.setRegNo(userNo);
+	
+	for(int i =0 ;i<manageCodeArr.size();i++) {
+		sDTO.setManageCode(manageCodeArr.get(i));
+		manageCode=manageCodeArr.get(i);
+		// 발표 삭제 
+		 result=ptService.deletePt(sDTO);
+		 log.info("result"+result);
+		// 설문지 삭제
+		 result2=ptService.deleteSurvey(sDTO);
+		 log.info("result2"+result2);
+		//파일 명 조회 
+		 pfDTO=ptService.getPtMainFile(manageCode);
+		 
+		 //db에서 파일삭제
+		 result3=ptService.deleteFile(sDTO);
+		 log.info("result3"+result3);
+		// 실제 경로 파일 삭제 
+		 filePath=filePath+pfDTO.getFileOrgName();
+		 log.info(filePath);
+		 File file =new File(filePath);
+		 if(file.exists()==true) {
+			 file.delete();
+		 }
+		}
+		String msg="";
+		String url="";
+		
+			msg="발표 삭제에 성공했습니다.";
+			url="/pt/ptManagement.do?userNo="+userNo;
+		
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		log.info(this.getClass()+"end");
+		return "/alert";
+	}
+	
+
+	////////////////////////////////////////////////////
+	//투표 등록
+	@RequestMapping(value="/pt/voteInsert",method=RequestMethod.POST)
+	public @ResponseBody List<SurveyDTO> insertVote(HttpServletRequest req, @RequestParam(value="voteQuestion") List<String> voteQuestion,@RequestParam(value="voteVal" ,required=false) List<String> voteVal,@RequestParam(value="voteVal1" ,required=false) List<String> voteVal1,@RequestParam(value="voteVal2",required=false) List<String> voteVal2) throws Exception{
+		String voteTitle=CmmUtil.nvl(req.getParameter("voteTitle"));
+		String svAnsOptType=CmmUtil.nvl(req.getParameter("svAnsOptType"));
+		String voteRegister=CmmUtil.nvl(req.getParameter("voteRegister"));
+		String manageCode=CmmUtil.nvl(req.getParameter("manageCode"));
+		String regNo=CmmUtil.nvl(req.getParameter("regNo"));
+		String ckRadio0=CmmUtil.nvl(req.getParameter("ckRadio0"));
+		String ckRadio1=CmmUtil.nvl(req.getParameter("ckRadio1"));
+		String ckRadio2=CmmUtil.nvl(req.getParameter("ckRadio2"));
+		
+	
+		SurveyDTO sDTO= new SurveyDTO();
+		SurveyDTO sDTO1 = new SurveyDTO();
+		SurveyDTO sDTO2 = new SurveyDTO();
+		SurveyDTO sDTO3 = new SurveyDTO();
+		int result=0;
+		int result1=0;
+		int result2=0;
+		int result3=0;
+		//제목 등록 
+		sDTO.setSurveyTitle(voteTitle);
+		sDTO.setSurveyRegister(voteRegister);
+		sDTO.setRegNo(regNo);
+		sDTO.setManageCode(manageCode);
+		
+		result=ptService.insertSurveyDTO(sDTO);
+		log.info("result"+result);
+		String surveyNo=sDTO.getSurveyNo();
+		log.info(surveyNo);
+		List<HashMap<String,Object>> sList = new ArrayList<>();
+		
+		if(voteVal!=null&&voteVal1==null&&voteVal2==null) {
+			for(int i =0;i<voteVal.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO1.setSurveyAnsOptType(svAnsOptType);
+				sDTO1.setSurveyNo(surveyNo);
+				sDTO1.setCkRadio(ckRadio0);
+				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO1.getSurveyNo());
+				hMap.put("ckRadio",sDTO1.getCkRadio());
+				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result1=ptService.insertVote(sList);
+		}else if(voteVal!=null&&voteVal1!=null&&voteVal2==null) {
+			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+			sDTO1.setSurveyAnsOptType(svAnsOptType);
+			sDTO1.setSurveyNo(surveyNo);
+			sDTO1.setCkRadio(ckRadio0);
+			
+			sDTO2.setSurveyTitleQ(voteQuestion.get(1).toString());
+			sDTO2.setSurveyAnsOptType(svAnsOptType);
+			sDTO2.setSurveyNo(surveyNo);
+			sDTO2.setCkRadio(ckRadio1);
+			
+			for(int i =0;i<voteVal.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO1.setSurveyAnsOptType(svAnsOptType);
+				sDTO1.setSurveyNo(surveyNo);
+				sDTO1.setCkRadio(ckRadio0);
+				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO1.getSurveyNo());
+				hMap.put("ckRadio",sDTO1.getCkRadio());
+				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			
+			result1=ptService.insertVote(sList);
+			sList=null;
+			
+			for(int i =0;i<voteVal1.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO2.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO2.setSurveyAnsOptType(svAnsOptType);
+				sDTO2.setSurveyNo(surveyNo);
+				sDTO2.setCkRadio(ckRadio0);
+				sDTO2.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO2.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO2.getSurveyNo());
+				hMap.put("ckRadio",sDTO2.getCkRadio());
+				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result1=ptService.insertVote(sList);
+			
+		}else if(voteVal!=null&&voteVal1!=null&&voteVal2!=null) {
+			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+			sDTO1.setSurveyAnsOptType(svAnsOptType);
+			sDTO1.setSurveyNo(surveyNo);
+			sDTO1.setCkRadio(ckRadio0);
+			
+			sDTO2.setSurveyTitleQ(voteQuestion.get(1).toString());
+			sDTO2.setSurveyAnsOptType(svAnsOptType);
+			sDTO2.setSurveyNo(surveyNo);
+			sDTO2.setCkRadio(ckRadio1);
+			
+			sDTO3.setSurveyTitleQ(voteQuestion.get(2).toString());
+			sDTO3.setSurveyAnsOptType(svAnsOptType);
+			sDTO3.setSurveyNo(surveyNo);
+			sDTO3.setCkRadio(ckRadio2);
+			
+			for(int i =0;i<voteVal.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO1.setSurveyAnsOptType(svAnsOptType);
+				sDTO1.setSurveyNo(surveyNo);
+				sDTO1.setCkRadio(ckRadio0);
+				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO1.getSurveyNo());
+				hMap.put("ckRadio",sDTO1.getCkRadio());
+				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result1=ptService.insertVote(sList);
+			sList=null;
+			
+			for(int i =0;i<voteVal1.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO2.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO2.setSurveyAnsOptType(svAnsOptType);
+				sDTO2.setSurveyNo(surveyNo);
+				sDTO2.setCkRadio(ckRadio0);
+				sDTO2.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO2.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO2.getSurveyNo());
+				hMap.put("ckRadio",sDTO2.getCkRadio());
+				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result1=ptService.insertVote(sList);
+			sList=null;
+			
+			for(int i =0;i<voteVal2.size();i++) {
+				HashMap<String,Object> hMap=new HashMap<>();
+				sDTO3.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO3.setSurveyAnsOptType(svAnsOptType);
+				sDTO3.setSurveyNo(surveyNo);
+				sDTO3.setCkRadio(ckRadio0);
+				sDTO3.setSurveyAnsOptValue(voteVal.get(i));
+				hMap.put("surveyTitleQ",sDTO3.getSurveyTitleQ());
+				hMap.put("surveyAnsOptType",sDTO3.getSurveyAnsOptType());
+				hMap.put("surveyNo",sDTO3.getSurveyNo());
+				hMap.put("ckRadio",sDTO3.getCkRadio());
+				hMap.put("surveyAnsOptValue", sDTO3.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result1=ptService.insertVote(sList);
+		}
+		
+		sList=null;
+		sDTO1=null;
+		sDTO2=null;
+		sDTO3=null;
+		
+		
+		return null;
+		
+	}
+	
+	
+
 	
 }

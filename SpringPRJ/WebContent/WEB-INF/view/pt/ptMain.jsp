@@ -167,6 +167,11 @@ color:red;
 .colorG{
 color:green;
 }
+/*pdf*/
+.pdfobject-container {
+   width: 100%;
+   height: 50%;
+}
     
     </style>
  
@@ -213,27 +218,7 @@ color:green;
 		    	<!--tab -->
 		    		<div id="tab3" class="tabcontent">
 			           <div id="page-wrapper"  style="min-height: 651px;">
-				<!-- pdf view -->			        
-					 <script src="/js/pdfobject.js"></script>
-
-<script type="text/javascript">
-window.onload = function (){
-    var success = new PDFObject({ url: "C:\Users\data12\git\SpringPRJ\WebContent\presentationPDF\LAN.pdf" }).embed("pdf"); 
-};
-	
-</script>
-<div id="pdf">pdf<a href="C:\Users\data12\git\SpringPRJ\WebContent\presentationPDF\LAN.pdf">샘플</a></div>
-
-
-
-
-
-
-
-
-
-
-
+			           
 			            <div class="row">
 			                <div class="col-lg-12" id="cont1">
 			                    <h4 class="page-header"> 코드번호:<%=mpDTO.getManageCode()%> </h4>
@@ -242,10 +227,25 @@ window.onload = function (){
 			                </div>
 			                <!-- /.col-lg-12 -->
 			            </div>
-			        <div id="ajaxView">
+				<!-- pdf view -->	
+						<div id="embed"></div>
+						<script src="/js/pdfobject.js"></script>
+						<script>
+						var fileName='<%=pfDTO.getFileOrgName()%>';
+						var email='<%=mpDTO.getEmail()%>';
+						var options = {
+								   width: "100%",
+								   height: "100%",
+								   page:"1"
+								};
+						//PDFObject.embed("C:/Users/data12/git/SpringPRJ/WebContent/presentationPDF/docs.pdf","#embed",options);
+						PDFObject.embed("/presentationPDF/"+email+"/"+fileName,"#embed",options);
+						</script>
+			    
+			        <div id="ajaxView" style="margin-top:15px">
 			            <!-- /.row -->
 			            <div class="row">
-			            		<div class="container bootstrap snippet" >
+			            		<div class="bootstrap snippet" >
 						<div class="row">
 							<div class="col-xs-12">
 								<div class="portlet portlet-default">
@@ -316,7 +316,7 @@ window.onload = function (){
 		     <div id="page-wrapper3"  style="min-height: 651px;">
 		     		<ul class="nav nav-tabs">
 		     		<!-- class="tabSurveyAud" -->
-						<li class="active" style="width: 50%;"  ><a data-toggle="tab"   id="tabSurveyAud"  href="#tabSurveyReg"  aria-expanded="true"  style="text-align:center"><h4>설문지 작성</h4></a></li>
+						<li class="active" style="width: 50%;"><a data-toggle="tab"   id="tabSurveyAud"  href="#tabSurveyReg"  aria-expanded="true"  style="text-align:center"><h4>설문지 작성</h4></a></li>
 						<li style="width: 50%;" ><a data-toggle="tab"  id="tabVoteAud" href="#tabVoteReg" aria-expanded="false"style="text-align:center"><h4>투표 작성</h4></a></li>
 					</ul>
 		     		<div class="tab-content">
@@ -324,9 +324,7 @@ window.onload = function (){
 		     					<div id="viewSurvey">설문지가 등록 되지 않았습니다.</div>
 		     			</div>
 		     			<div id="tabVoteReg" class="tab-pane">
-		     				<div id="viewVote">
-
-							</div>
+		     				<div id="viewVote">투표가 등록 되지 않았습니다.</div>
 		     			</div>
 		     		</div> 
 		     </div>
@@ -355,7 +353,7 @@ window.onload = function (){
 								</div>
 							<div id="questionList">
 	        					<div class="form-group">
-	        						<input type="text" id="surveyQuestion" name="surveyQuestion" class="form-control surveyQuestion" placeholder="설문지 질문을 입력해주세요">
+	        						<input type="text" name="surveyQuestion" class="form-control surveyQuestion" placeholder="설문지 질문을 입력해주세요">
 	        					</div>
 	        				</div>
 					
@@ -376,7 +374,60 @@ window.onload = function (){
 	        			    	</div>
 						</div>
 						<div id="tabVote" class="tab-pane">
+							<form id="voteForm" action="/pt/voteInsert.do"  method="post">
+						
+							<div class="form-group">
+								<label for="voteTitle"><b style="color:red">*</b> 투표 제목</label>
+							</div>
+							<div class="form-group">
+        						<input type="text" id="voteTitle" name="voteTitle" class="form-control"  placeholder="투표 제목을 입력해주세요">
+							</div>
+							<div class="form-group">
+								<label for="voteQuestion" style="width:50%"><b style="color:red">*</b> 투표 질문 1번</label>
+							</div>
+						
+							<div class="form-group">
+								<div class="switch-field">
+									<input type="radio"  id="ck" name="ckRadio0" value="ck" /> <label for="ck"><h4>다중선택</h4></label>
+								 	<input type="radio"  id="radio" name="ckRadio0" value="radio" /> <label for="radio"><h4>선택</h4></label>
+							 	</div>
+						 	</div>
 							
+							
+							<div id="voteQuestionList">
+	        					<div class="form-group">
+	        						<input type="text" name="voteQuestion" class="form-control voteQuestion" placeholder="투표 질문을 입력해주세요">
+	        					</div>
+		        				<div id="voteValList">
+		        					<div class="form-group">
+		        						<input type="text"  name="voteVal" class="form-control voteVal" placeholder="투표 답을 입력해주세요">
+		        					</div>
+	        					</div>
+	        					<div style="width:50%;float:left">
+	        						<div onclick="javascript:voteValAdd(0)" class="btn btn-primary" style="cursor:pointer;width:92.5%;margin-left:5%;margin-right:2.5%;;margin-bottom:15px">답 추가</div>
+	        					</div>
+	        					<div style="width:50%;float:left">
+	        						 <div onclick="javascript:voteValDel(0)" class="btn btn-danger" style="width:92.5%;margin-left:2.5%;margin-right:5%;;margin-bottom:15px">답 삭제</div>
+	        					</div>
+	        				</div>
+	        				
+							
+								<!-- 질문추가 삭제 버튼 -->
+	        					<div style="width:50%;float:left">
+	        						<div onclick="javascript:voteAdd()" class="btn btn-primary" style="cursor:pointer;width:92.5%;margin-left:5%;margin-right:2.5%;;margin-bottom:15px">질문 추가</div>
+	        					</div>
+	        					<div style="width:50%;float:left">
+	        						 <div onclick="javascript:voteDel()" class="btn btn-danger" style="width:92.5%;margin-left:2.5%;margin-right:5%;;margin-bottom:15px">질문 삭제</div>
+	        					</div>
+	        					
+	        					<input type="hidden" name="manageCode"  id="manageCode" value="<%=mpDTO.getManageCode()%>"/>
+								<input type="hidden" name="voteRegister"  value="<%=name%>"/>
+								<input type="hidden" name="regNo"  value="<%=userNo%>"/>
+								<input type="hidden" name="svAnsOptType"  id="svAnsOptType" value="0"/>
+							</form>
+	        			    	<div style="width:100%; ">
+	        			    		<button class="btn btn-success" onclick="javascript:voteForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%;">투표 등록</button>
+	        			    	</div>
 						</div>
 					</div>
 					
@@ -482,7 +533,7 @@ window.onload = function (){
 			}
 		})
 	});
-<%--  setInterval(function questionAll(){
+ <%--  setInterval(function questionAll(){
 		var cont="";
 		$.ajax({
 			url:'/pt/questionAllForm.do',
@@ -548,7 +599,7 @@ function openTab(evt, tabName) {
     if(tabName=="tab3"){
     	$.ajax({
     		
-    		url:"/ptMain2.do?manageCode="+<%=mpDTO.getManageCode()%>,
+    		url:"/ptMain2.do?manageCode="+'<%=mpDTO.getManageCode()%>',
     		method:"get",
     		dataType:'text',
     		success:function(data){
@@ -567,7 +618,6 @@ function openTab(evt, tabName) {
 //완료여부  설문지 조회
 $(function(){
 		$('#tabSurveyAud').click(function(){
-			alert($('#surveyCompleteCheck').val())
 			if($('#surveyCompleteCheck').val()=='0'){
 				$.ajax({
 					url:"/ptMain3.do?manageCode="+"<%=mpDTO.getManageCode()%>"+'&svAnsOptType=1',
@@ -598,7 +648,7 @@ $(function(){
 
 
 
-<!-- 설문 추가 삭제 -->
+<!-- 설문 추가 삭제 ,투표 질문 추가 삭제 , 투표 답 추가 삭제 -->
 <script>
 function questionAdd(){
 	var qLength=$('.surveyQuestion').length;
@@ -621,6 +671,100 @@ function questionDel(){
 		}
 	
 }
+function voteAdd(){
+	var qLength=$('.voteQuestion').length;
+	if(qLength<3){
+		
+		$('#voteQuestionList').append('<div class="form-group voteDelview'+qLength+'"><label for="voteQuestion" style="width:50%"><b style="color:red">*</b> 투표 질문 '+parseInt(qLength+1)+'번  </label></div>');
+		$('#voteQuestionList').append('<div class="form-group voteDelview'+qLength+'"><div class="switch-field"><input type="radio"  id="ck'+qLength+'" name="ckRadio'+qLength+'" value="ck" /> <label for="ck'+qLength+'"><h4>다중선택</h4></label><input type="radio"  id="radio'+qLength+'" name="ckRadio'+qLength+'" value="radio" /> <label for="radio'+qLength+'"><h4>선택</h4></label></div></div>');
+		$('#voteQuestionList').append('<div class="form-group voteDelview'+qLength+'"><input type="text" name="voteQuestion" class="form-control voteQuestion" placeholder="투표 질문을 입력해주세요"></div>');
+		$('#voteQuestionList').append('<div class="voteDelview'+qLength+'" id="voteValList'+qLength+'"><div class="form-group"><input type="text" name="voteVal'+qLength+'" class="form-control voteVal'+qLength+'" placeholder="투표 답을 입력해주세요"></div></div>');
+		$('#voteQuestionList').append('<div class="voteDelview'+qLength+'" style="width:50%;float:left"><div onclick="javascript:voteValAdd('+qLength+')" class="btn btn-primary" style="cursor:pointer;width:92.5%;margin-left:5%;margin-right:2.5%;;margin-bottom:15px">답 추가</div></div><div class="voteDelview'+qLength+'" style="width:50%;float:left"><div onclick="javascript:voteValDel('+qLength+')" class="btn btn-danger" style="width:92.5%;margin-left:2.5%;margin-right:5%;;margin-bottom:15px">답 삭제</div></div>');
+		
+	
+	}else{
+		alert('투표의 질문은 최대 3개까지 등록할 수 있습니다.');
+		return false;
+	}	
+	
+}
+function voteDel(){
+	var qLength=parseInt($('.voteQuestion').length)-1;
+		if(qLength>0){
+			
+			$(".voteDelView"+qLength).remove();
+		}else{
+			alert('투표의 질문은 최소 1개이상은 되어야 합니다.');
+			return false;
+		}
+	
+}
+
+function voteValAdd(i){
+	
+		if(i==0){
+			var qLength=$('.voteVal').length;
+			if(qLength<3){
+			$('#voteValList').append('<div class="form-group"><input type="text" name="voteVal" class="form-control voteVal" placeholder="투표 답을 입력해주세요"></div>');
+			}else{
+				alert('투표의 답은 최대 3개까지 등록할 수 있습니다.');
+				return false;
+			}	
+		}else if(i==1){
+			var qLength=$('.voteVal1').length;
+			if(qLength<3){
+			$('#voteValList1').append('<div class="form-group"><input type="text" name="voteVal1" class="form-control voteVal1" placeholder="투표 답을 입력해주세요"></div>');
+			}else{
+				alert('투표의 답은 최대 3개까지 등록할 수 있습니다.');
+				return false;
+			}	
+		}else if(i==2){
+			var qLength=$('.voteVal2').length;
+			if(qLength<3){
+			$('#voteValList2').append('<div class="form-group"><input type="text" name="voteVal2" class="form-control voteVal2" placeholder="투표 답을 입력해주세요"></div>');
+			}else{
+				alert('투표의 답은 최대 3개까지 등록할 수 있습니다.');
+				return false;
+			}	
+		}
+			
+}
+
+
+function voteValDel(i){
+	if(i==0){
+		var qLength=parseInt($('.voteVal').length)-1;
+		if(qLength>0){
+			$("input[name=voteVal]").eq(qLength).remove();
+		}else{
+			alert('투표의 답은 최소 1개이상은 되어야 합니다.');
+			return false;
+		}
+	}else if(i==1){
+		var qLength=parseInt($('.voteVal1').length)-1;
+		if(qLength>0){
+			$("input[name=voteVal1]").eq(qLength).remove();
+		}else{
+			alert('투표의 답은 최소 1개이상은 되어야 합니다.');
+			return false;
+		}
+	}else if(i==2){
+		var qLength=parseInt($('.voteVal2').length)-1;
+		if(qLength>0){
+			$("input[name=voteVal2]").eq(qLength).remove();
+		}else{
+			alert('투표의 답은 최소 1개이상은 되어야 합니다.');
+			return false;
+		}
+	}
+	
+	
+}
+
+
+
+
+
 
 </script>
 <!-- 설문지 유효성 검사 및 ajaxform 처리 -->
@@ -653,9 +797,9 @@ function surveyForm(){
 			} 
 		},
 		success:function(data){
+			alert("설문지가 등록되었습니다.")
 			var cont="";
 			var cont1="";//나의 설문 리스트를 담을 변수
-			console.log()
 				if(data.msg=="n"){
 					cont+='<form id="surveyAudReg" action="/pt/surveyAudReg.do">';
 					cont+='<div class="form-group"><label for="surveyAudTitle"><h3> 발표 제목 : '+data.sList[0].manageTitle+'</h3></label></div>'
@@ -696,7 +840,7 @@ function surveyForm(){
 				 	cont+='</div>';
 				 	cont+='</div>';
 				 	cont+='<hr />';
-				 	cont+="<input type='hidden' name='svAnsOptType' value='"+svAnsOptType+"'/>";
+				 	cont+="<input type='hidden' name='svAnsOptType' value='1'/>";
 				 	cont+='</form>';
 					cont+='<div style="width:100%;"><button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%; margin-bottom:10%">설문 등록</button></div>'
 					$('#viewSurvey').html(cont);
@@ -714,91 +858,6 @@ function surveyForm(){
 	}).submit();
 	//inputAudTextCss();
 }
-
-</script>
-
-<script>
-/* $(function(){
-	//청중 설문 등록 화면 보기  클릭은 좌측 2번쨰 탭 투표/설문  및 설문지 작성
-	$('.tabSurveyAud').click(function(){
-		var manageCode=$('#manageCode').val();
-		var svAnsOptType=$('#svAnsOptType').val();
-		$.ajax({
-			url:"/pt/surveyView.do" ,
-			method:"post",
-			data:{
-				"manageCode":manageCode,
-				"svAnsOptType":svAnsOptType
-			},
-			success:function(data){
-				console.log(data)
-				var cont="";
-				if(data!=0){
-					cont+='<form id="surveyAudReg" action="/pt/surveyAudReg.do">';
-					cont+='<div class="form-group"><label for="surveyAudTitle"><h3> 발표 제목 : '+data[0].manageTitle+'</h3></label></div>'
-					cont+='<hr />';
-					cont+='<div class="form-group"><label for="surveyAudVal"><h4><b style="color:red">*</b>설문 제목 : '+data[0].surveyTitle+'</h4></label></div>'
-					cont+='<hr />';
-					for(var i = 0; i <data.length ; i++){
-						cont+='<div class="form-group"><label for="surveyAudVal"><h4><i class="fa fa-check" id="surveyTextCss'+i+'"  style="color:red"></i>  설문 질문 '+parseInt(i+1)+'번 : ' +data[i].surveyTitleQ+'</h4></label></div>'
-						cont+='<div class="form-group"><input type="text" name="surveyAudVal"  class="form-control inputSurveyAudVal"  placeholder="답변을 적어주세요"></div>'
-						cont+="<input type='hidden' name='surveyTitleQ' value='"+data.surveyTitleQ+"'/>";
-						cont+="<input type='hidden' name='surveyTitleNo' value='"+data.surveyTitleNo+"'/>";
-						}
-					cont+='<hr />';
-					cont+='<div class="form-group">';
-					cont+='<label for="surveyNeedInfo"><h4><b style="color:red">*</b>필수 입력 정보</h4></label>'
-					cont+='</div>';
-					cont+='<hr />';
-					cont+='<div class="form-group">';
-					cont+='<label><h4><i id="surveyAudGenCss" class="fa fa-check" style="color:red"></i>성별</h4></label>'
-					cont+='</div>';
-					cont+='<div class="form-group">'
-					cont+='<div class="switch-field">';
-					cont+='<input type="radio"  id="man" name="gender" value="남성" /> <label for="man"><h4>남</h4></label>';
-			 		cont+='<input type="radio"  id="woman" name="gender" value="여성" /> <label for="woman"><h4>여</h4></label>';
-			 		cont+='</div>';
-			 		cont+='</div>';
-			 		cont+='<div class="form-group">';
-					cont+='<label><h4><i id="surveyAudAgeCss" class="fa fa-check" style="color:red"></i>연령별</h4></label>'
-					cont+='</div>';
-					cont+='<div class="form-group">'
-					cont+='<div class="switch-field2">';
-					cont+='<input type="radio"  id="ten" name="age" value="10"  /> <label for="ten"><h5>10대 이상</h5></label>';
-				 	cont+='<input type="radio"  id="twenty" name="age" value="20" /> <label for="twenty"><h5>20대 이상</h5></label>';
-					cont+='<input type="radio"  id="thirty" name="age" value="30" /> <label for="thirty"><h5>30대 이상</h5></label>';
-				 	cont+='<input type="radio"  id="fourty" name="age" value="40" /> <label for="fourty"><h5>40대 이상</h5></label>';
-					cont+='<input type="radio"  id="fifty" name="age" value="50" /> <label for="fifty"><h5>50대 이상</h5></label>';
-				 	cont+='</div>';
-				 	cont+='</div>';
-				 	cont+='<hr />';
-					cont+="<input type='hidden' name='svAnsOptType' value='"+svAnsOptType+"'/>";
-				 	cont+='</form>';
-					cont+='<div style="width:100%;"><button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%; margin-bottom:10%">설문 등록</button></div>'
-					$('#viewSurvey').html(cont);
-				
-					
-				}else{
-				
-					cont+= "<div><h4 style='text-align:center'>등록된 설문이 없습니다.</h4></div>"
-					$('#viewSurvey').html(cont);
-					
-				}
-				
-				
-			},
-			error:function(){
-				
-			}
-			
-		});
-	});
-	inputAudTextCss();
-	
-	 
-	
-}); */
-
 
 </script>
 <!-- 설문 유효성 색 및  검사 -->
@@ -895,8 +954,88 @@ function surveyForm(){
 		
 	}
 </script>
+<!-- 투표 ajax 유효성 검사 -->
+<script>
+
+
+function voteForm(){
+	
+	$('#voteForm').ajaxForm({
+		//유효성 검사
+		beforeSubmit:function(){
+			var qLength=parseInt($('.voteQuestion').length);
+			if($('#voteTitle').val()==""){
+				alert("투표 제목이 입력되지 않았습니다.");
+				return false;
+			}
+			
+			$('input[name=voteQuestion]').each(function(index){
+				if($(this).val()==""){
+					alert("투표 질문 "+parseInt(index+1)+"번 이 입력되지 않았습니다.");
+					$(this).focus();
+					return false;
+				}
+			});
+			for(var i=0 ; i<qLength;i++){
+				$(document).on('click','input:radio[name=ckRadio'+i+']',function(){
+					$('input:radio[name=ckRadio'+i+']').removeAttr('checked');
+					$(this).attr('checked','checked');
+				});
+			}
+			 for(var i = 0 ; i<qLength; i++){
+			 if($('input[name=ckRadio'+i+']').is(":checked")==false){
+					alert(parseInt(i+1)+"번 :다중 선택/ 선택을 클릭해주세요")
+					return false;
+				}
+			 } 
+		 
+			if($('.voteVal').length>0){
+				$('.voteVal').each(function(index){
+					if($(this).val()==""){
+						alert("투표 질문1 : "+parseInt(index+1)+"번 답이 입력되지 않았습니다.");
+						$(this).focus();
+						return false;
+					}
+				})
+			}
+			
+			if($('.voteVal1').length>0){
+				$('.voteVal1').each(function(index){
+					if($(this).val()==""){
+						alert("투표 질문2 : "+parseInt(index+1)+"번 답이 입력되지 않았습니다.");
+						$(this).focus();
+						return false;
+					}
+				})
+			}
+			if($('.voteVal2').length>0){
+				$('.voteVal2').each(function(index){
+					if($(this).val()==""){
+						alert("투표 질문3 : "+parseInt(index+1)+"번 답이 입력되지 않았습니다.");
+						$(this).focus();
+						return false;
+					}
+				})
+			}
+		},
+		method:'post',
+		success:function(data){
+			console.log(data)
+			
+		},
+		error:function(){
+			
+		}
+	}).submit();
+	
+}
+
+
+</script>
+
 
 <!-- 설문지 완료 여부  체크 input -->
 <input type="hidden" id="surveyCompleteCheck" value="0"/>
+
 </body>
 </html>

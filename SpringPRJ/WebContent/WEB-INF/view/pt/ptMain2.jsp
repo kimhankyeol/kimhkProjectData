@@ -18,7 +18,7 @@
 %>
 		            <!-- /.row -->
 			            <div class="row">
-			            		<div class="container bootstrap snippet" >
+			            		<div class="bootstrap snippet" >
 						<div class="row">
 							<div class="col-xs-12">
 								<div class="portlet portlet-default">

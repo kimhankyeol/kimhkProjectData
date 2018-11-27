@@ -36,6 +36,22 @@ public interface IPtService {
 	//청중 설문 답 등록
 	public int insertSurveyAnsAud(SurveyDTO sDTO) throws Exception;
 
+	//발표 관리 창  
+	public List<SurveyDTO> getPtManageMent(String userNo) throws Exception;
+
+	
+	
+	//설문 삭제 
+	public int deleteSurvey(SurveyDTO sDTO) throws Exception;
+	//발표 삭제 
+	public int deletePt(SurveyDTO sDTO) throws Exception;
+	// 파일 삭제
+	public int deleteFile(SurveyDTO sDTO) throws Exception;
+
+	//투표 등록
+	public int insertVote(List<HashMap<String,Object>> sList) throws Exception;
+
+
 	
 
 
