@@ -48,9 +48,10 @@ public interface IPtService {
 	// 파일 삭제
 	public int deleteFile(SurveyDTO sDTO) throws Exception;
 
-	//투표 등록
+	//투표 등록 
 	public int insertVote(List<HashMap<String,Object>> sList) throws Exception;
-
+	public int insertVote1(List<HashMap<String, Object>> sList1) throws Exception;
+	public int insertVote2(List<HashMap<String, Object>> sList2) throws Exception;
 
 	
 

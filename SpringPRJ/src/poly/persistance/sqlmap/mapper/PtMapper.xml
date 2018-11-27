@@ -230,5 +230,23 @@
 		</foreach>
 		
 	</insert>
+	<insert id="insertVote1" parameterType="map">
+	INSERT INTO 
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	VALUES 
+		<foreach collection="list" item="item" separator="," >
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		</foreach>
+		
+	</insert>
+	<insert id="insertVote2" parameterType="map">
+	INSERT INTO 
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	VALUES 
+		<foreach collection="list" item="item" separator="," >
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		</foreach>
+		
+	</insert>
 	
 </mapper>

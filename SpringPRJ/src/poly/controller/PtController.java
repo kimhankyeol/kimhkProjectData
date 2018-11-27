@@ -538,16 +538,18 @@ public class PtController {
 		result=ptService.insertSurveyDTO(sDTO);
 		log.info("result"+result);
 		String surveyNo=sDTO.getSurveyNo();
-		log.info(surveyNo);
 		List<HashMap<String,Object>> sList = new ArrayList<>();
-		
+		List<HashMap<String,Object>> sList1 = new ArrayList<>();
+		List<HashMap<String,Object>> sList2 = new ArrayList<>();
 		if(voteVal!=null&&voteVal1==null&&voteVal2==null) {
+			log.info("1번실행");
+			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
+			sDTO1.setSurveyAnsOptType(svAnsOptType);
+			sDTO1.setSurveyNo(surveyNo);
+			sDTO1.setCkRadio(ckRadio0);
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
-				sDTO1.setSurveyAnsOptType(svAnsOptType);
-				sDTO1.setSurveyNo(surveyNo);
-				sDTO1.setCkRadio(ckRadio0);
+				
 				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
 				hMap.put("surveyNo",sDTO1.getSurveyNo());
@@ -559,6 +561,7 @@ public class PtController {
 			}
 			result1=ptService.insertVote(sList);
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2==null) {
+			log.info("2번실행");
 			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
 			sDTO1.setSurveyAnsOptType(svAnsOptType);
 			sDTO1.setSurveyNo(surveyNo);
@@ -571,10 +574,7 @@ public class PtController {
 			
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
-				sDTO1.setSurveyAnsOptType(svAnsOptType);
-				sDTO1.setSurveyNo(surveyNo);
-				sDTO1.setCkRadio(ckRadio0);
+				
 				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
 				hMap.put("surveyNo",sDTO1.getSurveyNo());
@@ -586,26 +586,21 @@ public class PtController {
 			}
 			
 			result1=ptService.insertVote(sList);
-			sList=null;
 			
 			for(int i =0;i<voteVal1.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO2.setSurveyTitleQ(voteQuestion.get(0).toString());
-				sDTO2.setSurveyAnsOptType(svAnsOptType);
-				sDTO2.setSurveyNo(surveyNo);
-				sDTO2.setCkRadio(ckRadio0);
-				sDTO2.setSurveyAnsOptValue(voteVal.get(i));
+				
 				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO2.getSurveyAnsOptType());
 				hMap.put("surveyNo",sDTO2.getSurveyNo());
 				hMap.put("ckRadio",sDTO2.getCkRadio());
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
-				sList.add(hMap);
+				sList1.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote(sList);
-			
+			result1=ptService.insertVote1(sList1);
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2!=null) {
+			log.info("3번실행");
 			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
 			sDTO1.setSurveyAnsOptType(svAnsOptType);
 			sDTO1.setSurveyNo(surveyNo);
@@ -623,10 +618,7 @@ public class PtController {
 			
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
-				sDTO1.setSurveyAnsOptType(svAnsOptType);
-				sDTO1.setSurveyNo(surveyNo);
-				sDTO1.setCkRadio(ckRadio0);
+				
 				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
 				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO1.getSurveyAnsOptType());
@@ -637,45 +629,42 @@ public class PtController {
 				hMap=null;
 			}
 			result1=ptService.insertVote(sList);
-			sList=null;
 			
 			for(int i =0;i<voteVal1.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO2.setSurveyTitleQ(voteQuestion.get(0).toString());
-				sDTO2.setSurveyAnsOptType(svAnsOptType);
-				sDTO2.setSurveyNo(surveyNo);
-				sDTO2.setCkRadio(ckRadio0);
-				sDTO2.setSurveyAnsOptValue(voteVal.get(i));
+				
+				sDTO2.setSurveyAnsOptValue(voteVal1.get(i));
 				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO2.getSurveyAnsOptType());
 				hMap.put("surveyNo",sDTO2.getSurveyNo());
 				hMap.put("ckRadio",sDTO2.getCkRadio());
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
-				sList.add(hMap);
+				sList1.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote(sList);
-			sList=null;
+			result1=ptService.insertVote1(sList1);
 			
 			for(int i =0;i<voteVal2.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
-				sDTO3.setSurveyTitleQ(voteQuestion.get(0).toString());
+				sDTO3.setSurveyTitleQ(voteQuestion.get(2).toString());
 				sDTO3.setSurveyAnsOptType(svAnsOptType);
 				sDTO3.setSurveyNo(surveyNo);
 				sDTO3.setCkRadio(ckRadio0);
-				sDTO3.setSurveyAnsOptValue(voteVal.get(i));
+				sDTO3.setSurveyAnsOptValue(voteVal2.get(i));
 				hMap.put("surveyTitleQ",sDTO3.getSurveyTitleQ());
 				hMap.put("surveyAnsOptType",sDTO3.getSurveyAnsOptType());
 				hMap.put("surveyNo",sDTO3.getSurveyNo());
 				hMap.put("ckRadio",sDTO3.getCkRadio());
 				hMap.put("surveyAnsOptValue", sDTO3.getSurveyAnsOptValue());
-				sList.add(hMap);
+				sList2.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote(sList);
+			result1=ptService.insertVote2(sList2);
 		}
 		
 		sList=null;
+		sList1=null;
+		sList2=null;
 		sDTO1=null;
 		sDTO2=null;
 		sDTO3=null;
