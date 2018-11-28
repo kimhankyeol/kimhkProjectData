@@ -157,17 +157,6 @@ public class PtService implements IPtService{
 		return ptMapper.insertVote(sList);
 	}
 
-	@Override
-	public int insertVote1(List<HashMap<String, Object>> sList1) throws Exception {
-		// TODO Auto-generated method stub
-		return ptMapper.insertVote1(sList1);
-	}
-
-	@Override
-	public int insertVote2(List<HashMap<String, Object>> sList2) throws Exception {
-		// TODO Auto-generated method stub
-		return ptMapper.insertVote2(sList2);
-	}
 	//투표 조회
 	@Override
 	public List<SurveyDTO> getVoteView(SurveyDTO sDTO) throws Exception {

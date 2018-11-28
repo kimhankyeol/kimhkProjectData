@@ -539,9 +539,7 @@ public class PtController {
 		log.info("result"+result);
 		String surveyNo=sDTO.getSurveyNo();
 		List<HashMap<String,Object>> sList = new ArrayList<>();
-		List<HashMap<String,Object>> sList1 = new ArrayList<>();
-		List<HashMap<String,Object>> sList2 = new ArrayList<>();
-		List<SurveyDTO> sList3 = new ArrayList<>();
+		List<SurveyDTO> sList1 = new ArrayList<>();
 		HashMap<String,Object> sMap=new HashMap<>();
 		if(voteVal!=null&&voteVal1==null&&voteVal2==null) {
 			log.info("1번실행");
@@ -568,7 +566,7 @@ public class PtController {
 			sDTO.setSurveyAnsOptType(svAnsOptType);
 			
 			result1=ptService.insertVote(sList);
-			sList3=ptService.getVoteView(sDTO);
+			sList1=ptService.getVoteView(sDTO);
 			
 			
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2==null) {
@@ -605,7 +603,7 @@ public class PtController {
 			}
 			
 			result1=ptService.insertVote(sList);
-			
+			sList=new ArrayList<>();
 			for(int i =0;i<voteVal1.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
 				
@@ -616,12 +614,12 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO2.getSurveyAnsOptNo());
 				sDTO2.setSurveyAnsOptValue(voteVal1.get(i));
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
-				sList1.add(hMap);
+				sList.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote1(sList1);
-			
-			sList3=ptService.getVoteView(sDTO);
+			result1=ptService.insertVote(sList);
+			sList=new ArrayList<>();
+			sList1=ptService.getVoteView(sDTO);
 			
 		
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2!=null) {
@@ -664,6 +662,7 @@ public class PtController {
 				hMap=null;
 			}
 			result1=ptService.insertVote(sList);
+			sList=new ArrayList<>();
 			
 			for(int i =0;i<voteVal1.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
@@ -676,11 +675,11 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO2.getSurveyAnsOptNo());
 				sDTO2.setSurveyAnsOptValue(voteVal1.get(i));
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
-				sList1.add(hMap);
+				sList.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote1(sList1);
-			
+			result1=ptService.insertVote(sList);
+			sList=new ArrayList<>();
 			for(int i =0;i<voteVal2.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
 				
@@ -691,22 +690,21 @@ public class PtController {
 				hMap.put("ckRadio",sDTO3.getCkRadio());
 				hMap.put("surveyAnsOptNo",sDTO3.getSurveyAnsOptNo());
 				hMap.put("surveyAnsOptValue", sDTO3.getSurveyAnsOptValue());
-				sList2.add(hMap);
+				sList.add(hMap);
 				hMap=null;
 			}
-			result1=ptService.insertVote2(sList2);
-			
-			sList3=ptService.getVoteView(sDTO);
-			for(int i = 0 ; i <sList3.size();i++) {
-				log.info(sList3.get(i).getSurveyAnsOptNo());
+			result1=ptService.insertVote(sList);
+			sList=new ArrayList<>();
+			sList1=ptService.getVoteView(sDTO);
+			for(int i = 0 ; i <sList1.size();i++) {
+				log.info(sList1.get(i).getSurveyAnsOptNo());
 			}
 			
 		}
-		model.addAttribute("sList3",sList3);
+		model.addAttribute("sList1",sList1);
 		//sDTO1 ,sDTO2, sDTO3에 조회하기 위한 변수 세팅
 		sList=null;
 		sList1=null;
-		sList2=null;
 		sDTO1=null;
 		sDTO2=null;
 		sDTO3=null;

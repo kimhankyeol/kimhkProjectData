@@ -2,13 +2,20 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% List<SurveyDTO> sList= (List<SurveyDTO>)request.getAttribute("sList3");
+<% List<SurveyDTO> sList= (List<SurveyDTO>)request.getAttribute("sList1");
 	String msg = (String)request.getAttribute("msg");
 %>
 
 
 
-
+<script>
+	$(function(){
+		var sList=parseInt(<%=sList.size()%>);
+		for(var i =0; i<sList;i++){
+			$('.voteQ').eq(i).append()
+		}
+	})
+</script>
 <form id="surveyAudReg" action="/pt/surveyAudReg.do">
 	<div class="form-group">
 		<label for="surveyAudTitle"><h3>발표 제목 : <%=sList.get(0).getManageTitle() %></h3></label>
@@ -21,12 +28,22 @@
 	</div>
 	<hr />
 	<%for (int i=0 ; i<sList.size();i++) {%>
-	<div class="form-group">
+		<div class="form-group voteQ">
 		<label for="surveyAudVal"><h4>
 				<i class="fa fa-check" id="surveyTextCss<%=i%>" style="color: red"></i>
-				투표 질문 <%=i+1%>번 : <%=sList.get(i).getSurveyTitleQ() %>
+				투표 질문 <%=sList.get(i).getSurveyAnsOptNo()%>번 : <%=sList.get(i).getSurveyTitleQ() %>
 			</h4></label>
-	</div>
+			<%if(sList.get(i).getCkRadio().equals("radio")){ %>
+				<label for="surveyAudVal"><h4>
+				<i class="fa fa-check" id="surveyTextCss<%=i%>" style="color: red"></i>
+				<%=sList.get(i).getSurveyAnsOptValue()%>
+			</h4></label>
+			<%} %>
+		</div>
+		
+	<%} %>
+	
+
 	<div class="form-group">
 		<input type="text" name="surveyAudVal"
 			class="form-control inputSurveyAudVal" placeholder="답변을 적어주세요">
@@ -34,7 +51,7 @@
 	<input type='hidden' name='surveyTitleQ' value="" />
 	 <input type='hidden'name='surveyTitleNo' value="" />
 	<hr />
-	<%} %>
+	
 	<div class="form-group">
 		<label for="surveyNeedInfo"><h4><b style="color: red">*</b>필수 입력 정보</h4></label>
 	</div>
