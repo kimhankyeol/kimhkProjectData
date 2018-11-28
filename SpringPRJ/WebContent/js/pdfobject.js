@@ -207,9 +207,9 @@
     };
 
     embed = function(url, targetSelector, options){
-    	console.log(url)
+/*    	console.log(url)
     	console.log(targetSelector)
-        //Ensure URL is available. If not, exit now.
+*/        //Ensure URL is available. If not, exit now.
         if(typeof url !== "string"){ return embedError("URL is not valid"); }
 
         //If targetSelector is not defined, convert to boolean

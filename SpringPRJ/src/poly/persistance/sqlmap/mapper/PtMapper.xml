@@ -223,30 +223,52 @@
 	<!-- 설문등록 surveyTitleDTO -->
 	<insert id="insertVote" parameterType="map">
 	INSERT INTO 
-	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE,SV_ANS_OPT_NO)
 	VALUES 
 		<foreach collection="list" item="item" separator="," >
-		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue},#{item.surveyAnsOptNo})
 		</foreach>
 		
 	</insert>
 	<insert id="insertVote1" parameterType="map">
 	INSERT INTO 
-	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE,SV_ANS_OPT_NO)
 	VALUES 
 		<foreach collection="list" item="item" separator="," >
-		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue},#{item.surveyAnsOptNo})
 		</foreach>
 		
 	</insert>
 	<insert id="insertVote2" parameterType="map">
 	INSERT INTO 
-	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE)
+	SV_TITLE(SV_T_QTITLE,SURVEY_NO,SV_ANS_OPT_TYPE,SV_CKRADIO,SV_ANS_OPT_VALUE,SV_ANS_OPT_NO)
 	VALUES 
 		<foreach collection="list" item="item" separator="," >
-		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue})
+		(#{item.surveyTitleQ},#{item.surveyNo},#{item.surveyAnsOptType},#{item.ckRadio},#{item.surveyAnsOptValue},#{item.surveyAnsOptNo})
 		</foreach>
 		
 	</insert>
+	<select id="getVoteView" parameterType="SurveyDTO" resultType="SurveyDTO">
+	SELECT 
+		S.SURVEY_NO AS surveyNo,
+		S.SURVEY_TITLE AS surveyTitle,
+		S.SURVEY_REGISTER AS surveyRegister,
+		S.REGNO AS regNo,
+		S.REGDATE AS regDate,
+		S.MANAGE_CODE AS manageCode,
+		SVT.SV_T_NO AS surveyTitleNo,
+		SVT.SV_T_QTITLE AS surveyTitleQ,
+		SVT.SV_ANS_OPT_VALUE AS surveyAnsOptValue,
+		SVT.SV_ANS_OPT_NO as surveyAnsOptNo,
+		SVT.SV_ANS_OPT_NO as surveyAnsOptType,
+		SVT.SV_CKRADIO as ckRadio,
+		MP.MANAGE_TITLE AS manageTitle
+	FROM SURVEY S 
+	INNER JOIN MANAGE_PRESENTATION MP
+	ON S.MANAGE_CODE=MP.MANAGE_CODE AND S.MANAGE_CODE=#{manageCode}
+    INNER JOIN SV_TITLE SVT
+    ON S.SURVEY_NO=SVT.SURVEY_NO AND SVT.SV_ANS_OPT_TYPE=#{surveyAnsOptType} AND  S.SURVEY_NO=#{surveyNo}
+	
+	</select>
 	
 </mapper>

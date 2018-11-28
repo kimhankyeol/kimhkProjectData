@@ -168,6 +168,12 @@ public class PtService implements IPtService{
 		// TODO Auto-generated method stub
 		return ptMapper.insertVote2(sList2);
 	}
+	//투표 조회
+	@Override
+	public List<SurveyDTO> getVoteView(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteView(sDTO);
+	}
 
 	
 	

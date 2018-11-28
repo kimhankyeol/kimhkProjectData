@@ -47,6 +47,8 @@ public interface PtMapper {
 	public int insertVote(List<HashMap<String,Object>> sList) throws Exception;
 	public int insertVote1(List<HashMap<String, Object>> sList1) throws Exception;
 	public int insertVote2(List<HashMap<String, Object>> sList2) throws Exception;
+	//투표 조회
+	public List<SurveyDTO> getVoteView(SurveyDTO sDTO) throws Exception;
 	
 
 

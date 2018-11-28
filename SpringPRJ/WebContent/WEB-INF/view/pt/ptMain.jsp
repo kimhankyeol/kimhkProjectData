@@ -1019,8 +1019,10 @@ function voteForm(){
 			}
 		},
 		method:'post',
+		dataType:'text',
 		success:function(data){
 			console.log(data)
+			$('#viewVote').html(data);
 			
 		},
 		error:function(){
