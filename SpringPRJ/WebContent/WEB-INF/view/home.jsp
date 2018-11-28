@@ -4,7 +4,8 @@
 
 <html>
 	<head>
-	<%@include file="headerScript.jsp" %>	
+	<%@include file="headerScript.jsp" %>
+	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>	
     </head>
 	<body>
 

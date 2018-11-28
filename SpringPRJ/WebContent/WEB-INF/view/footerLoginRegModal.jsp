@@ -1,5 +1,11 @@
+<%@page import="poly.util.CmmUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	/* 카카오 */
+	String kId = CmmUtil.nvl((String)session.getAttribute("kId"));
+	String kName = CmmUtil.nvl((String)session.getAttribute("kName"));
+%>
 <!-- 로그인 모달 -->
 		<div class="container">
 				 <div class="modal fade login" id="loginModal">
@@ -13,7 +19,47 @@
 		                        <div class="box">
 		                             <div class="content">
 		                                <div class="social">
-		                                    <a class="circle github" href="/auth/github">
+		                                	<!-- 카카오 로그인 시작 -->
+		                                	<div class="col-sm-12 text-center">
+		                                		<a id = "kakao-login-btn"></a>
+		                                	</div>
+		                                	<script type='text/javascript'>
+												//<![CDATA[
+												// 사용할 앱의 JavaScript 키를 설정해 주세요.
+												Kakao.init('3c4f208eac66e6a205db05cd3f87269b');
+												var kId = '';
+												var kName = '';
+												// 카카오 로그인 버튼을 생성합니다.
+												Kakao.Auth.createLoginButton({
+													container : '#kakao-login-btn',
+													success : function(authObj) {
+														// 로그인 성공시, API를 호출합니다.
+														Kakao.API.request({
+															url: '/v2/user/me',
+															success: function(res){
+																alert(JSON.stringify(res));
+																kId = JSON.stringify(res.id);
+																kName = JSON.stringify(res.properties.nickname);
+																console.log(" res.id : " +JSON.stringify(res.id));
+																console.log(" res.properties.nickname : " + JSON.stringify(res.properties.nickname));
+																console.log(" kId : " + JSON.stringify(res.id));
+																console.log(" kName : " + JSON.stringify(res.properties.nickname));
+																location.href='/kakaoCallback.do?kId='+kId+'&kName='+kName;
+															},
+															fail: function(error){
+																alert(JSON.stringify(error));
+															}
+														});
+														alert(JSON.stringify(authObj));
+													},
+													fail : function(err) {
+														alert(JSON.stringify(err));
+													}
+												});
+												//]]>
+											</script>
+		                                	<!-- 카카오 로그인 끝 -->
+		                                    <!-- <a class="circle github" href="/auth/github">
 		                                        <i class="fa fa-github fa-fw"></i>
 		                                    </a>
 		                                    <a id="google_login" class="circle google" href="/auth/google_oauth2">
@@ -21,7 +67,7 @@
 		                                    </a>
 		                                    <a id="facebook_login" class="circle facebook" href="/auth/facebook">
 		                                        <i class="fa fa-facebook fa-fw"></i>
-		                                    </a>
+		                                    </a> -->
 		                                </div>
 		                                <div class="division">
 		                                    <div class="line l"></div>

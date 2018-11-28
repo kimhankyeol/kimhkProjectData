@@ -41,6 +41,16 @@ public class HomeController {
 		System.out.println("home");
 		return "/home";
 	}
+	// 여기서부터 카카오 로그인
+		@RequestMapping(value="/kakaoCallback")
+		public String kakaoCallback(HttpServletRequest req, HttpSession session) throws Exception {
+			String kId = CmmUtil.nvl(req.getParameter("kId"));
+			String kName = CmmUtil.nvl(req.getParameter("kName"));
+			
+			session.setAttribute("kId", kId);
+			session.setAttribute("kName", kName);
+			return "redirect:/home.do";
+		}
 
 
 }
