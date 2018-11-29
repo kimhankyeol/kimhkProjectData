@@ -1,5 +1,7 @@
 package poly.service;
 
+import java.util.HashMap;
+
 import poly.dto.UserDTO;
 
 public interface IUserService {
@@ -14,4 +16,6 @@ public interface IUserService {
 
 	//id찾기
 	public String getIdFind(UserDTO uDTO) throws Exception;
+	//pw찾기  비밀번호 변경
+	public HashMap<String, Object> updateTmpPass(HashMap<String, Object> hMap) throws Exception;
 }

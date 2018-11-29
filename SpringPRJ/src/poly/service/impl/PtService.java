@@ -163,6 +163,38 @@ public class PtService implements IPtService{
 		// TODO Auto-generated method stub
 		return ptMapper.getVoteView(sDTO);
 	}
+	//voteValCOunt 1,2,3
+	@Override
+	public List<SurveyDTO> getVoteValCount1(SurveyDTO sDTO1) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteValCount1(sDTO1);
+	}
+
+	@Override
+	public List<SurveyDTO> getVoteValCount2(SurveyDTO sDTO2) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteValCount2(sDTO2);
+	}
+
+	@Override
+	public List<SurveyDTO> getVoteValCount3(SurveyDTO sDTO3) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteValCount3(sDTO3);
+	}
+	//투표 한개만 조회 되기 위한 카운트
+	@Override
+	public int getVoteCount(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteCount(sDTO);
+	}
+	//투표조회후 리스트 뽑아오기 위해 surveyNO
+	@Override
+	public String getVoteSurveyNo(SurveyDTO sDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.getVoteSurveyNo(sDTO);
+	}
+
+
 
 	
 	

@@ -140,6 +140,7 @@
 		                                    <input  class="form-control" type="text" placeholder="이름을 입력하세요" id="idName">
 		                                    <input  class="form-control" type="text" placeholder="전화번호" id="idTel">
 			                                <a type="button" class="btn btn-primary" onclick="javascript:idFind()" >아이디 찾기</a>
+			                                <div id="idView"></div>
 		                                </div>
 		                            
 		                                <!--비밀번호 찾기  -->

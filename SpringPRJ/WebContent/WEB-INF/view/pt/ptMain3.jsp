@@ -72,6 +72,6 @@
 	<button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width: 95%; margin-left: 2.5%; margin-right: 2.5%; margin-bottom: 10%">설문 등록</button>
 </div>
 
-<%} else {%>
-설문지가 등록 되지 않았습니다.
+<%} else if(msg=="n"){%>
+<div>설문지가 등록 되지 않았습니다.</div>
 <%}%>

@@ -1,11 +1,14 @@
 package poly.controller;
 
+import java.util.HashMap;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import poly.dto.UserDTO;
 import poly.service.IUserService;
 import poly.util.CmmUtil;
+import poly.util.Email;
+import poly.util.EmailSender;
 
 @Controller
 public class UserController {
 	
 	@Resource(name="UserService")
 	private IUserService userService;
-	
+	@Autowired
+	private EmailSender emailSender;
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	
@@ -151,20 +157,60 @@ public class UserController {
 		//id 찾기 
 		@RequestMapping(value="/idFind")
 		public @ResponseBody String idFind(HttpServletRequest req) throws Exception{
-			String name=req.getParameter("name");
-			log.info(name);
-			String tel=req.getParameter("tel");
-			log.info(tel);
+			String idName=req.getParameter("idName");
+			log.info(idName);
+			String idTel=req.getParameter("idTel");
+			log.info(idTel);
 			
 			UserDTO uDTO =new UserDTO();
-			uDTO.setUserName(name);
-			uDTO.setTel(tel);
+			uDTO.setUserName(idName);
+			uDTO.setTel(idTel);
 			
 			String result = userService.getIdFind(uDTO);
 			
 			log.info(result);
 			
 			return result;
+		}
+		//id 찾기 
+		@RequestMapping(value="/pwFind")
+		public @ResponseBody String pwFind(HttpServletRequest req,Model model) throws Exception{
+			String pwEmail=req.getParameter("pwEmail");
+			String pwName=req.getParameter("pwName");
+			String pwTel=req.getParameter("pwTel");
+			
+			//이메일을 보내기 위한 생성자
+			Email sendEmail=new Email();
+			UserDTO uDTO = new UserDTO();
+			uDTO.setEmail(pwEmail);
+			uDTO.setUserName(pwName);
+			
+			HashMap<String,Object> hMap =new HashMap<>();
+			hMap.put("uDTO", uDTO);
+			hMap=userService.updateTmpPass(hMap);
+			String msg="";
+			String url="";
+			int result = (int) hMap.get("result");
+			if(result == 0 ) {
+				msg= "회원 정보가 일치하지 않습니다.";
+				url="/home.do";
+			}else {
+				sendEmail.setReciver(pwEmail);
+				log.info(sendEmail.getReciver());
+				sendEmail.setSubject(pwName+"님 임시비밀번호");
+				sendEmail.setContent(sendEmail.setContents(hMap));
+				
+				emailSender.SendEmail(sendEmail);
+				
+				msg = "가입하신 이메일로 임시비밀번호가 전송되었습니다.";
+				url = "/home.do";
+			}
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			hMap = null;
+			uDTO = null;
+			
+			return null;
 		}
 		
 }

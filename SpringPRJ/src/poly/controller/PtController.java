@@ -254,6 +254,7 @@ public class PtController {
 	}
 	@RequestMapping(value="/ptMain3.do")
 	public String getPtMain3(HttpServletRequest req , HttpServletResponse resp,Model model) throws Exception{
+		log.info(this.getClass()+"start");
 		String manageCode= req.getParameter("manageCode");
 		String svAnsOptType=req.getParameter("svAnsOptType");
 		SurveyDTO sDTO =new SurveyDTO();
@@ -270,7 +271,7 @@ public class PtController {
 		
 		model.addAttribute("sList",sList);
 		model.addAttribute("msg",msg);
-		
+		log.info(this.getClass()+"end");
 		
 		return "/pt/ptMain3";
 				
@@ -306,6 +307,7 @@ public class PtController {
 		sDTO.setSurveyRegister(surveyRegister);
 		sDTO.setRegNo(regNo);
 		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);
 		
 		//sList
 		List<SurveyDTO> sList=new ArrayList<>();
@@ -320,7 +322,7 @@ public class PtController {
 		
 		
 		int count=0;
-		//설문 투표 등록은 한개씩
+		//설문 투표 등록은 각각 한개씩
 		count=ptService.getSurveyCount(sDTO);
 		log.info(count);
 		
@@ -339,10 +341,14 @@ public class PtController {
 			 svtDTO.setSurveyNo(surveyNo);
 			 svtDTO.setSurveyTitleQ(surveyQuestion);
 			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO.setManageCode(manageCode);
+			 svtDTO.setRegNo(regNo);
 			 sList.add(svtDTO);
 			 svtDTO1.setSurveyNo(surveyNo);
 			 svtDTO1.setSurveyTitleQ(surveyQuestion1);
 			 svtDTO1.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO1.setManageCode(manageCode);
+			 svtDTO1.setRegNo(regNo);
 			 sList.add(svtDTO1);
 			 
 		}else if(req.getParameter("surveyQuestion1")!=null&&req.getParameter("surveyQuestion2")!=null) {
@@ -351,20 +357,28 @@ public class PtController {
 			 svtDTO.setSurveyNo(surveyNo);
 			 svtDTO.setSurveyTitleQ(surveyQuestion);
 			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO.setManageCode(manageCode);
+			 svtDTO.setRegNo(regNo);
 			 sList.add(svtDTO);
 			 svtDTO1.setSurveyNo(surveyNo);
 			 svtDTO1.setSurveyTitleQ(surveyQuestion1);
 			 svtDTO1.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO1.setManageCode(manageCode);
+			 svtDTO1.setRegNo(regNo);	
 			 sList.add(svtDTO1);
 			 svtDTO2.setSurveyNo(surveyNo);
 			 svtDTO2.setSurveyTitleQ(surveyQuestion2);
 			 svtDTO2.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO2.setManageCode(manageCode);
+			 svtDTO2.setRegNo(regNo);
 			 sList.add(svtDTO2);
 			 
 		}else {
 			 svtDTO.setSurveyNo(surveyNo);
 			 svtDTO.setSurveyTitleQ(surveyQuestion);
 			 svtDTO.setSurveyAnsOptType(svAnsOptType);
+			 svtDTO.setManageCode(manageCode);
+			 svtDTO.setRegNo(regNo);
 			 sList.add(svtDTO);
 		}
 
@@ -534,13 +548,23 @@ public class PtController {
 		sDTO.setSurveyRegister(voteRegister);
 		sDTO.setRegNo(regNo);
 		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);;
 		
 		result=ptService.insertSurveyDTO(sDTO);
-		log.info("result"+result);
 		String surveyNo=sDTO.getSurveyNo();
+
+		int count=0;
+		//설문 투표 등록은 각각 한개씩
+		count=ptService.getSurveyCount(sDTO);
+		if(count<1) {
+		/*투표 val1 ,val2,val3*/
 		List<HashMap<String,Object>> sList = new ArrayList<>();
 		List<SurveyDTO> sList1 = new ArrayList<>();
-		HashMap<String,Object> sMap=new HashMap<>();
+		List<SurveyDTO> sList2 = new ArrayList<>();
+		List<SurveyDTO> sList3 = new ArrayList<>();
+		
+		
+		
 		if(voteVal!=null&&voteVal1==null&&voteVal2==null) {
 			log.info("1번실행");
 			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
@@ -548,6 +572,8 @@ public class PtController {
 			sDTO1.setSurveyNo(surveyNo);
 			sDTO1.setCkRadio(ckRadio0);
 			sDTO1.setSurveyAnsOptNo("1");
+			sDTO1.setManageCode(manageCode);
+			sDTO1.setRegNo(regNo);
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
 				
@@ -558,6 +584,8 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO1.getSurveyAnsOptNo());
 				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
 				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO2.getManageCode());
+				hMap.put("regNo",sDTO1.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
@@ -566,8 +594,10 @@ public class PtController {
 			sDTO.setSurveyAnsOptType(svAnsOptType);
 			
 			result1=ptService.insertVote(sList);
-			sList1=ptService.getVoteView(sDTO);
 			
+			String msg="n";
+			model.addAttribute("msg",msg);
+			model.addAttribute("sList1",sList1);
 			
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2==null) {
 			log.info("2번실행");
@@ -579,14 +609,16 @@ public class PtController {
 			sDTO1.setSurveyNo(surveyNo);
 			sDTO1.setCkRadio(ckRadio0);
 			sDTO1.setSurveyAnsOptNo("1");
+			sDTO1.setManageCode(manageCode);
+			sDTO1.setRegNo(regNo);
 			
 			sDTO2.setSurveyTitleQ(voteQuestion.get(1).toString());
 			sDTO2.setSurveyAnsOptType(svAnsOptType);
 			sDTO2.setSurveyNo(surveyNo);
 			sDTO2.setCkRadio(ckRadio1);
 			sDTO2.setSurveyAnsOptNo("2");
-			
-			
+			sDTO2.setManageCode(manageCode);
+			sDTO2.setRegNo(regNo);
 			
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
@@ -598,11 +630,14 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO1.getSurveyAnsOptNo());
 				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
 				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO1.getManageCode());
+				hMap.put("regNo",sDTO1.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
 			
 			result1=ptService.insertVote(sList);
+			
 			sList=new ArrayList<>();
 			for(int i =0;i<voteVal1.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
@@ -614,37 +649,49 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO2.getSurveyAnsOptNo());
 				sDTO2.setSurveyAnsOptValue(voteVal1.get(i));
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO2.getManageCode());
+				hMap.put("regNo",sDTO2.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
 			result1=ptService.insertVote(sList);
 			sList=new ArrayList<>();
-			sList1=ptService.getVoteView(sDTO);
+			sList1=ptService.getVoteValCount1(sDTO1);
+			sList2=ptService.getVoteValCount2(sDTO2);
 			
+			String msg="n";
+			model.addAttribute("msg",msg);
+			model.addAttribute("sList1",sList1);
+			model.addAttribute("sList2",sList2);
 		
 		}else if(voteVal!=null&&voteVal1!=null&&voteVal2!=null) {
 			log.info("3번실행");
 			sDTO.setSurveyNo(surveyNo);
 			sDTO.setSurveyAnsOptType(svAnsOptType);
-			sDTO1.setSurveyAnsOptNo("1");
 			
+			sDTO1.setSurveyAnsOptNo("1");
 			sDTO1.setSurveyTitleQ(voteQuestion.get(0).toString());
 			sDTO1.setSurveyAnsOptType(svAnsOptType);
 			sDTO1.setSurveyNo(surveyNo);
 			sDTO1.setCkRadio(ckRadio0);
-			
+			sDTO1.setManageCode(manageCode);	
+			sDTO1.setRegNo(regNo);
 			
 			sDTO2.setSurveyTitleQ(voteQuestion.get(1).toString());
 			sDTO2.setSurveyAnsOptType(svAnsOptType);
 			sDTO2.setSurveyNo(surveyNo);
 			sDTO2.setCkRadio(ckRadio1);
 			sDTO2.setSurveyAnsOptNo("2");
+			sDTO2.setManageCode(manageCode);
+			sDTO2.setRegNo(regNo);
 			
 			sDTO3.setSurveyTitleQ(voteQuestion.get(2).toString());
 			sDTO3.setSurveyAnsOptType(svAnsOptType);
 			sDTO3.setSurveyNo(surveyNo);
 			sDTO3.setCkRadio(ckRadio2);
 			sDTO3.setSurveyAnsOptNo("3");
+			sDTO3.setManageCode(manageCode);
+			sDTO3.setRegNo(regNo);
 			
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
@@ -658,6 +705,8 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO1.getSurveyAnsOptNo());
 				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
 				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO1.getManageCode());
+				hMap.put("regNo",sDTO1.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
@@ -675,6 +724,8 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO2.getSurveyAnsOptNo());
 				sDTO2.setSurveyAnsOptValue(voteVal1.get(i));
 				hMap.put("surveyAnsOptValue", sDTO2.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO2.getManageCode());
+				hMap.put("regNo",sDTO2.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
@@ -690,29 +741,93 @@ public class PtController {
 				hMap.put("ckRadio",sDTO3.getCkRadio());
 				hMap.put("surveyAnsOptNo",sDTO3.getSurveyAnsOptNo());
 				hMap.put("surveyAnsOptValue", sDTO3.getSurveyAnsOptValue());
+				hMap.put("manageCode", sDTO3.getManageCode());
+				hMap.put("regNo",sDTO3.getRegNo());
 				sList.add(hMap);
 				hMap=null;
 			}
 			result1=ptService.insertVote(sList);
 			sList=new ArrayList<>();
-			sList1=ptService.getVoteView(sDTO);
-			for(int i = 0 ; i <sList1.size();i++) {
-				log.info(sList1.get(i).getSurveyAnsOptNo());
-			}
+			
+			sList1=ptService.getVoteValCount1(sDTO1);
+			sList2=ptService.getVoteValCount2(sDTO2);
+			sList3=ptService.getVoteValCount3(sDTO3);
+		
+			
+			String msg="n";
+			model.addAttribute("msg",msg);
+			model.addAttribute("sList1",sList1);
+			model.addAttribute("sList2",sList2);
+			model.addAttribute("sList3",sList3);
 			
 		}
-		model.addAttribute("sList1",sList1);
+		
 		//sDTO1 ,sDTO2, sDTO3에 조회하기 위한 변수 세팅
 		sList=null;
 		sList1=null;
+		sList2=null;
+		sList3=null;
 		sDTO1=null;
 		sDTO2=null;
 		sDTO3=null;
-		
+		}else {
+			String msg="투표는 1개만 등록가능합니다.";
+			model.addAttribute("msg",msg);
+			
+		}
 		return "/pt/ptMain4";
 		
 	}
 	
+	@RequestMapping(value="/ptMain4")
+	public String getPtMain4(HttpServletRequest req,Model model ) throws Exception {
+		String surveyNo="";
+		String manageCode=req.getParameter("manageCode");
+		String svAnsOptType =req.getParameter("svAnsOptType");
+
+		log.info(manageCode);
+		log.info(svAnsOptType);
+		String msg="";
+		SurveyDTO sDTO= new SurveyDTO();
+		List<SurveyDTO> sList1 = new ArrayList<>();
+		List<SurveyDTO> sList2 = new ArrayList<>();
+		List<SurveyDTO> sList3 = new ArrayList<>();
+		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);
+		surveyNo=ptService.getVoteSurveyNo(sDTO);
+		sDTO.setSurveyNo(surveyNo);
+		sList1=ptService.getVoteValCount1(sDTO);
+		sList2=ptService.getVoteValCount2(sDTO);
+		sList3=ptService.getVoteValCount3(sDTO);
+		if(sList1!=null&&sList2==null&&sList3==null) {
+			model.addAttribute("sList1", sList1);
+			msg="n";
+			model.addAttribute("msg",msg);
+		}else if(sList1!=null&&sList2!=null&&sList3==null) {
+			model.addAttribute("sList1", sList1);
+			model.addAttribute("sList2", sList2);
+			msg="n";
+			model.addAttribute("msg",msg);
+		}else if(sList1!=null&&sList2!=null&&sList3!=null) {
+			model.addAttribute("sList1", sList1);
+			model.addAttribute("sList2", sList2);
+			model.addAttribute("sList3", sList3);
+			msg="n";
+			model.addAttribute("msg",msg);
+		}else if(sList1==null&&sList2==null&&sList3==null) {
+			msg="y";
+			model.addAttribute("msg",msg);
+		}
+	
+		
+				
+		
+		sList1=null;
+		sList2=null;
+		sList3=null;
+				
+		return "/pt/ptMain4";
+	}
 	
 
 	

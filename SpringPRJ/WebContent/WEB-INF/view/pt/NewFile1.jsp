@@ -12,6 +12,7 @@
 	String email = CmmUtil.nvl((String) session.getAttribute("email")); //형변환 해줘야됨 오브젝트로 넘어오기 떄문에 형변환 해주고 널값이 넘어오면 오류 같은거 발생하기 때문에 미리만든메소드를 이용해 널값을 공백으로 바꿈 
 	String name = CmmUtil.nvl((String) session.getAttribute("name"));
 	String userNo = CmmUtil.nvl((String) session.getAttribute("userNo"));
+
 %>
 <html>
 <head>
@@ -42,7 +43,6 @@
     <!-- custom css question -->
     <link rel="stylesheet" href="/css/custom.css" />
     
-      
     <style>
     /* 성별 버튼*/
     .switch-field {
@@ -239,7 +239,6 @@ color:green;
     
     </style>
  
- 
 </head>
 <body>
  	
@@ -253,7 +252,7 @@ color:green;
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/home.do">Audience Interaction System</a>
+                <a class="navbar-brand" href="index.html">Audience Interaction System</a>
             </div>
        
 
@@ -453,7 +452,7 @@ color:green;
 						
 							<div class="form-group">
 								<div class="switch-field">
-									<input type="radio"  id="ck" name="ckRadio0" value="checkbox" /> <label for="ck"><h4>다중선택</h4></label>
+									<input type="radio"  id="ck" name="ckRadio0" value="ck" /> <label for="ck"><h4>다중선택</h4></label>
 								 	<input type="radio"  id="radio" name="ckRadio0" value="radio" /> <label for="radio"><h4>선택</h4></label>
 							 	</div>
 						 	</div>
@@ -491,7 +490,7 @@ color:green;
 								<input type="hidden" name="svAnsOptType"  id="svAnsOptType" value="0"/>
 							</form>
 	        			    	<div style="width:100%; ">
-	        			    		<button class="btn btn-success" onclick="javascript:voteForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%;margin-bottom:15px">투표 등록</button>
+	        			    		<button class="btn btn-success" onclick="javascript:voteForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%;">투표 등록</button>
 	        			    	</div>
 						</div>
 					</div>
@@ -647,6 +646,7 @@ color:green;
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
+
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
@@ -662,8 +662,7 @@ function openTab(evt, tabName) {
     //질문 보기 클릭
     if(tabName=="tab3"){
     	$.ajax({
-    		
-    		url:"/ptMain2.do?manageCode="+"<%=mpDTO.getManageCode()%>",
+    		url:"/ptMain2.do?manageCode="+<%=mpDTO.getManageCode()%>,
     		method:"get",
     		dataType:'text',
     		success:function(data){
@@ -682,15 +681,13 @@ function openTab(evt, tabName) {
 //완료여부  설문지 조회
 $(function(){
 		$('#tabSurveyAud').click(function(){
-			var manageCode="<%=mpDTO.getManageCode().toString()%>";
 			if($('#surveyCompleteCheck').val()=='0'){
 				$.ajax({
-					url:"/ptMain3.do?manageCode="+manageCode+"&svAnsOptType=1",
+					url:"/ptMain3.do?manageCode="+"<%=mpDTO.getManageCode()%>"+'&svAnsOptType=1',
 					method:"get",
 					dataType:'text',
 					success:function(data){
 							$('#viewSurvey').html(data);
-						
 					},
 					error:function(){
 						
@@ -701,11 +698,14 @@ $(function(){
 				cont+='<div class="form-group" style="text-align:center">';
 				cont+='<label><i class="fa fa-check-square-o fa-2x" style="color:green"> 설문지 등록 완료</label>';
 				cont+='</div>';
-				$('#viewSurvey').html(cont);
+				$('#viewSurvey').html(cont)
 		   
 		    }
+
 		});
 })
+
+
 </script>
 
 
@@ -761,6 +761,7 @@ function voteDel(){
 		}
 	
 }
+
 function voteValAdd(i){
 	
 		if(i==0){
@@ -790,6 +791,8 @@ function voteValAdd(i){
 		}
 			
 }
+
+
 function voteValDel(i){
 	if(i==0){
 		var qLength=parseInt($('.voteVal').length)-1;
@@ -819,12 +822,19 @@ function voteValDel(i){
 	
 	
 }
+
+
+
+
+
+
 </script>
 <!-- 설문지 유효성 검사 및 ajaxform 처리 -->
 
 <script>
 function surveyForm(){
 	var qLength=parseInt($('.surveyQuestion').length);
+
 	$('#surveyForm').ajaxForm({
 		beforeSubmit: function(){
 			if($('#surveyTitle').val()==""){
@@ -849,7 +859,7 @@ function surveyForm(){
 			} 
 		},
 		success:function(data){
-			
+			alert("설문지가 등록되었습니다.")
 			var cont="";
 			var cont1="";//나의 설문 리스트를 담을 변수
 				if(data.msg=="n"){
@@ -896,7 +906,7 @@ function surveyForm(){
 				 	cont+='</form>';
 					cont+='<div style="width:100%;"><button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%; margin-bottom:10%">설문 등록</button></div>'
 					$('#viewSurvey').html(cont);
-					alert("설문지가 등록되었습니다.")
+				
 				
 				}else if(data.msg=="y"){
 					alert("설문지는 1개 이상 등록 할 수 없습니다.");
@@ -910,10 +920,12 @@ function surveyForm(){
 	}).submit();
 	//inputAudTextCss();
 }
+
 </script>
 <!-- 설문 유효성 색 및  검사 -->
 <script>
 //체크 색상 변경 함수
+
 	//입력여부 확인
 	$(document).on('keyup','.inputSurveyAudVal', function(){
 		var index=$('.inputSurveyAudVal').index(this);
@@ -957,8 +969,11 @@ function surveyForm(){
 		} 
 	});
 /*  	function inputAudTextCss(){
+
 } */
+
 //청중 설문지 등록 폼
+
 	function surveyAudRegForm(){
 		
 		$('#surveyAudReg').ajaxForm({
@@ -1003,8 +1018,9 @@ function surveyForm(){
 </script>
 <!-- 투표 ajax 유효성 검사 -->
 <script>
+
+
 function voteForm(){
-	
 	
 	$('#voteForm').ajaxForm({
 		//유효성 검사
@@ -1082,9 +1098,10 @@ function voteForm(){
 <script>
 $(function(){
 	$('#tabVoteAud').click(function(){
-	var manageCode="<%=mpDTO.getManageCode().toString()%>";
+	
+		/*ptMain5 누르면 화면 조회*/
 			$.ajax({
-				url:"/ptMain4.do?manageCode="+manageCode+"&svAnsOptType=0",
+				url:'/ptMain4.do?manageCode='+<%=mpDTO.getManageCode()%>+'&svAnsOptType=0',
 				method:"get",
 				dataType:'text',
 				success:function(data){
@@ -1093,12 +1110,6 @@ $(function(){
 				error:function(){
 					
 				}
-		}); 
-		
-	})	
-})
-	
-
 	/* 	if($('#surveyCompleteCheck').val()=='0'){		
 			})
 		}else{
@@ -1109,7 +1120,10 @@ $(function(){
 			$('#viewSurvey').html(cont)
 	   
 	    } */
-	    
+
+	}); 
+})
+
 </script>
 
 

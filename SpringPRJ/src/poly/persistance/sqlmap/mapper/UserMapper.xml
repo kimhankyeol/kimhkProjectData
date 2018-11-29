@@ -50,4 +50,14 @@
 	WHERE USERNAME=#{userName} AND TEL=#{tel}
 	
 	</select>
+	
+	<!--  임시비밀번호 -->
+	<update id="updateTmpPass" parameterType="UserDTO">
+	UPDATE
+		USER
+	SET
+		PASSWORD = #{passWord}
+	WHERE
+		EMAIL=#{email} AND USERNAME=#{userName}
+ 	</update>
 </mapper>

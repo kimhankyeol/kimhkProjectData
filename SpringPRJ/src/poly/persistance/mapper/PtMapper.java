@@ -49,6 +49,14 @@ public interface PtMapper {
 	public int insertVote2(List<HashMap<String, Object>> sList2) throws Exception;
 	//투표 조회
 	public List<SurveyDTO> getVoteView(SurveyDTO sDTO) throws Exception;
+	//voteVal1,2,3
+	public List<SurveyDTO> getVoteValCount1(SurveyDTO sDTO1) throws Exception;
+	public List<SurveyDTO> getVoteValCount2(SurveyDTO sDTO2) throws Exception;
+	public List<SurveyDTO> getVoteValCount3(SurveyDTO sDTO3) throws Exception;
+	//투표등록은 1개만
+	public int getVoteCount(SurveyDTO sDTO) throws Exception;
+	//투표등록후 리스트 조회하기 위해 필요한 surveyNo
+	public String getVoteSurveyNo(SurveyDTO sDTO) throws Exception;
 	
 
 

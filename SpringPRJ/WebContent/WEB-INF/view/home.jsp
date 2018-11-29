@@ -217,7 +217,80 @@
 	}
 	
 	</script>
+	<!-- 아이디 찾기 -->
+	<script>
+	function idFind(){
+		var idName=$('#idName').val();
+		var idTel=$('#idTel').val();
+		$.ajax({
+			url:"/idFind.do",
+			method:"post",
+			data:{
+				"idName":idName,
+				"idTel":idTel
+				
+			},
+			success:function(data){
+				var cont ="";
+				if(data==""){
+					cont+="조회된 결과가 없습니다."
+					$('#idView').html(cont);
+				}else{
+					cont+=idName;
+					cont+="님의 "
+					cont+=data;
+					$('#idView').html(cont);
+					$('#pwEmail').val(data);
+					$('#pwName').val(idName);
+					$('#pwTel').val(idTel);
+				}
+			
+				
+			},
+			error:function(){
+				
+			}
+		})
+	}
+	/*비밀번호 찾기*/
+	function pwFind(){
+		var pwEmail=$('#pwEmail').val();
+		var pwName=$('#pwName').val();
+		var pwTel=$('#pwTel').val();
+		$.ajax({
+			url:"/pwFind.do",
+			method:"post",
+			data:{
+				"pwEmail":pwEmail,
+				"pwName":pwName,
+				"pwTel":pwTel
+			},
+			success:function(data){
+				var cont ="";
+				console.log(data)
+				alert("임시 비밀번호가 발송되었습니다.")
+				/* if(data==""){
+					cont+="조회된 결과가 없습니다."
+					$('#idView').html(cont);
+				}else{
+					cont+=idName;
+					cont+="님의 "
+					cont+=data;
+					$('#idView').html(cont);
+					$('#pwEmail').val(data);
+					$('#pwName').val(idName);
+					$('#pwTel').val(idTel);
+				} */
+			
+				
+			},
+			error:function(){
+				
+			}
+		})
+	}
 	
+	</script>
 	
 
 <!--  수정확인중 11월 2일 9시 41분 마스터 -->
