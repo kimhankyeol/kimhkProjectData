@@ -6,6 +6,11 @@
 	String name = CmmUtil.nvl((String) session.getAttribute("name"));
 	String userNo = CmmUtil.nvl((String) session.getAttribute("userNo"));
 %>
+<%
+	/* 카카오 */
+	String kId = CmmUtil.nvl((String)session.getAttribute("kId"));
+	String kName = CmmUtil.nvl((String)session.getAttribute("kName"));
+%>
 
 <!-- Header -->
 		<header id="header" class="transparent-nav">
@@ -30,17 +35,25 @@
 				<!-- Navigation -->
 				<nav id="nav">	
 					<ul class="main-menu nav navbar-nav navbar-right">
-						<%if ("".equals(email)) {%>
+						<%if ("".equals(email) && "".equals(kId)) {%>
 							<li><a href="/home.do">Home</a></li>
 							<li><a data-toggle="modal"onclick="openLoginModal();">Login</a></li>
 							<li><a data-toggle="modal" onclick="openFindModal();" >아이디 찾기/비밀번호 찾기</a></li>
 							<li><a data-toggle="modal"onclick="openRegisterModal();">회원가입</a></li> 
 						<%} else { %>
+							<% if(!"".equals(email)) { %>
 							<li><a>Home</a></li>
 							<li><a>마이페이지</a></li>
 							<li><a href="/pt/ptManagement.do?userNo=<%=userNo%>">발표관리</a></li>
-							<li><a><%=name %>님 안녕하세요</a> </li>
+							<li><a><%= name %>님 안녕하세요</a> </li>
 							<li><a onclick="logout()">로그아웃</a></li>
+							<% } else if(!"".equals(kId)) { %>
+							<li><a>Home</a></li>
+							<li><a>마이페이지</a></li>
+							<li><a href="#">발표관리</a></li>
+							<li><a><%= kName %>님 안녕하세요</a> </li>
+							<li><a onclick="logout()">로그아웃</a></li>
+							<% } %>
 						<%} %>
 					</ul>
 				</nav>
