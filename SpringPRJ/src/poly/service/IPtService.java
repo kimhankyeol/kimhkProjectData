@@ -64,6 +64,9 @@ public interface IPtService {
 	//투표 1개만 등록하고 조회하기 위한 surveyNo
 	public String getVoteSurveyNo(SurveyDTO sDTO) throws Exception;
 
+	//청중 투표 등록
+	public int insertVoteAnsAud(List<HashMap<String, Object>> sList) throws Exception;
+
 
 
 	

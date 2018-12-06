@@ -18,4 +18,9 @@ public interface IUserService {
 	public String getIdFind(UserDTO uDTO) throws Exception;
 	//pw찾기  비밀번호 변경
 	public HashMap<String, Object> updateTmpPass(HashMap<String, Object> hMap) throws Exception;
+
+	public int insertUserRegSns(UserDTO uDTO) throws Exception;
+
+	public String getFindUserNo(UserDTO uDTO)throws Exception;
+
 }

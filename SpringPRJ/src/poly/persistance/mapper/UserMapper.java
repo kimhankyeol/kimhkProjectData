@@ -16,6 +16,8 @@ public interface UserMapper {
 	public String getIdFind(UserDTO uDTO) throws Exception;
 	//pw 찾기 바꾸기 이메일 
 	public int updateTmpPass(UserDTO uDTO) throws Exception;
+	public int insertUserRegSns(UserDTO uDTO) throws Exception;
+	public String getFindUserNo(UserDTO uDTO)throws Exception;
 
 	
 }

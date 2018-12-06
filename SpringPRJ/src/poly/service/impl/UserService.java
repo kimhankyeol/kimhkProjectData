@@ -59,4 +59,14 @@ public class UserService implements IUserService{
 		
 		return hMap;
 	}
+	@Override
+	public int insertUserRegSns(UserDTO uDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.insertUserRegSns(uDTO);
+	}
+	@Override
+	public String getFindUserNo(UserDTO uDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getFindUserNo(uDTO);
+	}
 }

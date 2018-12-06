@@ -67,6 +67,24 @@
 	</bean>
 	<bean id="emailSender" class="poly.util.EmailSender">
 	</bean>
+<!-- 이메일 보내기 -->
+	<bean id="mailSender2" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="defaultEncoding" value="utf-8"/>
+		<property name="username" value="superdeveloper2018@gmail.com" />
+		<property name="password" value="@gks1030ruf" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="email2" class="poly.util.Email2">
+	</bean>
+	<bean id="emailSender2" class="poly.util.EmailSender2">
+	</bean>
 
 
 </beans>

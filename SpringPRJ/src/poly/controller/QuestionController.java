@@ -74,7 +74,6 @@ public class QuestionController {
 	public @ResponseBody List<QuestionDTO> getQuestionAll(HttpServletRequest req , HttpServletResponse resp) throws Exception {
 	
 		String manageCode=req.getParameter("manageCode");
-		log.info(manageCode);
 		QuestionDTO qDTO= new QuestionDTO();
 		qDTO.setManageCode(manageCode);
 

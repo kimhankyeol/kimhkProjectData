@@ -2,7 +2,7 @@ package poly.util;
 
 import java.util.HashMap;
 
-public class Email {
+public class Email2 {
 
     private String subject;
     private String content;
@@ -21,20 +21,22 @@ public class Email {
     public void setSubject(String subject) {
         this.subject = subject;
     }
-    public String getContent() {
-        return content;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
     public String getRegdate() {
         return regdate;
     }
     public void setRegdate(String regdate) {
         this.regdate = regdate;
     }
-    public String setContents(HashMap<String, Object> hMap){
-    	String contents = "";
+    
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String setContents(HashMap<String, Object> hMap) {
+		String contents = "";
     	contents += "<html>";
     	contents += "<title>";
     	contents += "</title>";
@@ -59,7 +61,7 @@ public class Email {
 		contents += "<td height='35' style='color: rgb(77, 77, 77); line-height: 14px; font-size: 12px;'></td>";
 		contents += "</tr>";
 		contents += "<tr>";
-		contents += "<td class='texts' style='color: rgb(97, 106, 116); line-height: 22px; padding-left: 10px; font-family: 돋움, Dotum; font-size: 12px;'><b>임시비밀번호 :</b>"+hMap.get("tmpPass").toString()+"</td>";
+		contents += "<td class='texts' style='color: rgb(97, 106, 116); line-height: 22px; padding-left: 10px; font-family: 돋움, Dotum; font-size: 12px;'><b>초대 방 번호:</b><a href='http://localhost:8080/ptMain.do?manageCode="+hMap.get("manageCode").toString()+"'>"+hMap.get("manageCode").toString()+"</a></td>";
 		contents += "</tr>";
 		contents += "<tr>";
 		contents += "<td height='30' style='color: rgb(77, 77, 77); line-height: 14px; font-size: 12px;'></td>";
@@ -77,8 +79,7 @@ public class Email {
     	contents += "</body>";
     	contents += "</html>";
     	return contents;
-    }
-	
+	};
      
     
 }

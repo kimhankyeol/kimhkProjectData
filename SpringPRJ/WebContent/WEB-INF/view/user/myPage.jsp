@@ -158,44 +158,8 @@
 
 </head>
 <body>
-<!-- Header -->
-		<header id="header" class="transparent-nav">
-			<div class="container">
-
-				<div class="navbar-header">
-					<!-- Logo -->
-					<div class="navbar-brand">
-						<a class="logo" href="index.html">
-							<img src="/img/logo.png" alt="logo">
-						</a>
-					</div>
-					<!-- /Logo -->
-
-					<!-- Mobile toggle -->
-					<button class="navbar-toggle">
-						<span></span>
-					</button>
-					<!-- /Mobile toggle -->
-				</div>
-
-				<!-- Navigation -->
-				<nav id="nav">
-					<ul class="main-menu nav navbar-nav navbar-right">
-					
-						<li><a>Home</a></li>
-						<li><a>마이페이지</a></li>
-						<li><a>발표관리</a></li>
-						<li><a>김한결님 안녕하세요</a> </li>
-					<!-- 
-						<li><a href="index.html">Home</a></li>
-						<li><a data-toggle="modal" href="javascript:login()" onclick="openLoginModal();">Login</a></li>
-						<li><a data-toggle="modal" href="javascript:void(0)" onclick="openRegisterModal();">SIGN UP</a></li>--> 
-					</ul>
-				</nav>
-				<!-- /Navigation -->
-
-			</div>
-		</header>
+	<%@include file="/WEB-INF/view/headerScript.jsp" %>
+	<%@include file="/WEB-INF/view/headerAIS.jsp" %>
 		<div class="bg-image bg-parallax overlay" style="background-image:url(/img/home-background.jpg)"></div>
 			
 			

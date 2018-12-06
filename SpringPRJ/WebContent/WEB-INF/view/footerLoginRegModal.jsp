@@ -1,5 +1,9 @@
+<%@page import="poly.util.CmmUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+
+%>
 <!-- 로그인 모달 -->
 		<div class="container">
 				 <div class="modal fade login" id="loginModal">
@@ -13,7 +17,48 @@
 		                        <div class="box">
 		                             <div class="content">
 		                                <div class="social">
-		                                    <a class="circle github" href="/auth/github">
+		                                	<!-- 카카오 로그인 시작 -->
+		                                	<div class="col-sm-12 text-center">
+		                                		<a id = "kakao-login-btn"></a>
+		                                	</div>
+		                                	<script type='text/javascript'>
+												//<![CDATA[
+												// 사용할 앱의 JavaScript 키를 설정해 주세요.
+												Kakao.init('43345c9ebcab9cfdb9af11b8112451b4');
+												var kId = '';
+												var kName = '';
+												// 카카오 로그인 버튼을 생성합니다.
+												Kakao.Auth.createLoginButton({
+													container : '#kakao-login-btn',
+													success : function(authObj) {
+														// 로그인 성공시, API를 호출합니다.
+														Kakao.API.request({
+															url: '/v2/user/me',
+															success: function(res){
+																alert(JSON.stringify(res));
+																kId = JSON.stringify(res.id);
+																kName = JSON.stringify(res.properties.nickname);
+																kEmail = JSON.stringify(res.kakao_account.email);
+																console.log(" res.id : " +JSON.stringify(res.id));
+																console.log(" res.properties.nickname : " + JSON.stringify(res.properties.nickname));
+																console.log(" kId : " + JSON.stringify(res.id));
+																console.log(" kName : " + JSON.stringify(res.properties.nickname));
+																location.href='/kakaoCallback.do?kId='+kId+'&kName='+kName+'&kEmail='+kEmail;
+															},
+															fail: function(error){
+																alert(JSON.stringify(error));
+															}
+														});
+														alert(JSON.stringify(authObj));
+													},
+													fail : function(err) {
+														alert(JSON.stringify(err));
+													}
+												});
+												//]]>	
+											</script>
+		                                	<!-- 카카오 로그인 끝 -->
+		                                    <!-- <a class="circle github" href="/auth/github">
 		                                        <i class="fa fa-github fa-fw"></i>
 		                                    </a>
 		                                    <a id="google_login" class="circle google" href="/auth/google_oauth2">
@@ -21,7 +66,7 @@
 		                                    </a>
 		                                    <a id="facebook_login" class="circle facebook" href="/auth/facebook">
 		                                        <i class="fa fa-facebook fa-fw"></i>
-		                                    </a>
+		                                    </a> -->
 		                                </div>
 		                                <div class="division">
 		                                    <div class="line l"></div>
@@ -72,22 +117,10 @@
 		                        <div class="box">
 		                             <div class="content">
 		                                <div class="social">
-		                                    <a class="circle github" href="/auth/github">
-		                                        <i class="fa fa-github fa-fw"></i>
-		                                    </a>
-		                                    <a id="google_login" class="circle google" href="/auth/google_oauth2">
-		                                        <i class="fa fa-google-plus fa-fw"></i>
-		                                    </a>
-		                                    <a id="facebook_login" class="circle facebook" href="/auth/facebook">
-		                                        <i class="fa fa-facebook fa-fw"></i>
-		                                    </a>
+		                                  
+		                                	
 		                                </div>
-		                                <div class="division">
-		                                    <div class="line l"></div>
-		                                      <span>or</span>
-		                                    <div class="line r"></div>
-		                                </div>
-		                                <div class="error"></div>
+		                            
 		                       			<!-- 회원가입 -->
 		                    
 		                                <div class="form RegisterBox">
@@ -140,7 +173,6 @@
 		                                    <input  class="form-control" type="text" placeholder="이름을 입력하세요" id="idName">
 		                                    <input  class="form-control" type="text" placeholder="전화번호" id="idTel">
 			                                <a type="button" class="btn btn-primary" onclick="javascript:idFind()" >아이디 찾기</a>
-			                                <div id="idView"></div>
 		                                </div>
 		                            
 		                                <!--비밀번호 찾기  -->

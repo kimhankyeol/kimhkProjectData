@@ -57,6 +57,8 @@ public interface PtMapper {
 	public int getVoteCount(SurveyDTO sDTO) throws Exception;
 	//투표등록후 리스트 조회하기 위해 필요한 surveyNo
 	public String getVoteSurveyNo(SurveyDTO sDTO) throws Exception;
+	//청중 투표 등록
+	public int insertVoteAnsAud(List<HashMap<String,Object>> sList) throws Exception;
 	
 
 

@@ -5,6 +5,10 @@
 	String email = CmmUtil.nvl((String) session.getAttribute("email")); //형변환 해줘야됨 오브젝트로 넘어오기 떄문에 형변환 해주고 널값이 넘어오면 오류 같은거 발생하기 때문에 미리만든메소드를 이용해 널값을 공백으로 바꿈 
 	String name = CmmUtil.nvl((String) session.getAttribute("name"));
 	String userNo = CmmUtil.nvl((String) session.getAttribute("userNo"));
+ 	String snsVal =CmmUtil.nvl((String) session.getAttribute("snsVal")); 
+/* 	 카카오 
+	String kId = CmmUtil.nvl((String)session.getAttribute("kId"));
+	String kName = CmmUtil.nvl((String)session.getAttribute("kName")); */
 %>
 
 <!-- Header -->
@@ -28,22 +32,41 @@
 				</div>
 
 				<!-- Navigation -->
-				<nav id="nav">	
-					<ul class="main-menu nav navbar-nav navbar-right">
-						<%if ("".equals(email)) {%>
-							<li><a href="/home.do">Home</a></li>
-							<li><a data-toggle="modal"onclick="openLoginModal();">Login</a></li>
-							<li><a data-toggle="modal" onclick="openFindModal();" >아이디 찾기/비밀번호 찾기</a></li>
-							<li><a data-toggle="modal"onclick="openRegisterModal();">회원가입</a></li> 
-						<%} else { %>
-							<li><a>Home</a></li>
+				<nav id="nav">   
+               <ul class="main-menu nav navbar-nav navbar-right">
+                  <%if ("".equals(email)) {%>
+                  	<li><a href="/home.do">Home</a></li>
+					<li><a data-toggle="modal"onclick="openLoginModal();">Login</a></li>
+					<li><a data-toggle="modal" onclick="openFindModal();" >아이디 찾기/비밀번호 찾기</a></li>
+					<li><a data-toggle="modal"onclick="openRegisterModal();">회원가입</a></li> 
+		<%-- 				
+						<%}%>
+                  <% else { %>
+						<%if(snsVal.equals("y")){ %>
+						<li><a>Home</a></li>
 							<li><a>마이페이지</a></li>
-							<li><a href="/pt/ptManagement.do?userNo=<%=userNo%>">발표관리</a></li>
 							<li><a><%=name %>님 안녕하세요</a> </li>
 							<li><a onclick="logout()">로그아웃</a></li>
+						<%}else{ %>
+<%} %> --%>
+						
+						
+						<%} else {%>
+							<%if(snsVal.equals("y")){ %>
+							<li><a>Home</a></li>
+							 <li><a href="/pt/ptManagement.do?userNo=<%=userNo%>">발표관리</a></li>
+							<li><a><%=name %>님 안녕하세요</a> </li>
+							<li><a onclick="logout()">로그아웃</a></li>
+							<%}else{ %>
+							<li><a>Home</a></li>
+							<li><a href="/mypage.do">마이페이지</a></li>
+							 <li><a href="/pt/ptManagement.do?userNo=<%=userNo%>">발표관리</a></li>
+							<li><a><%=name %>님 안녕하세요</a> </li>
+							<li><a onclick="logout()">로그아웃</a></li>
+							<%} %>
 						<%} %>
-					</ul>
-				</nav>
+                  </ul>
+            </nav>
 				<!-- /Navigation -->
 
 			</div>

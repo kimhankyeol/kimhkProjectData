@@ -255,7 +255,6 @@ color:green;
                 </button>
                 <a class="navbar-brand" href="/home.do">Audience Interaction System</a>
             </div>
-       
 
             <div class="navbar-default sidebar in" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
@@ -296,17 +295,41 @@ color:green;
 						<div id="embed"></div>
 						<script src="/js/pdfobject.js"></script>
 						<script>
-						var fileName='<%=pfDTO.getFileOrgName()%>';
-						var email='<%=mpDTO.getEmail()%>';
-						var options = {
-								   width: "100%",
-								   height: "100%",
-								   page:"1"
-								};
-						//PDFObject.embed("C:/Users/data12/git/SpringPRJ/WebContent/presentationPDF/docs.pdf","#embed",options);
-						PDFObject.embed("/presentationPDF/"+email+"/"+fileName,"#embed",options);
+							
+							var fileName='<%=pfDTO.getFileOrgName()%>';
+							var email='<%=mpDTO.getEmail()%>';
+							var options = {
+									   width: "100%",
+									   height: "150%",
+									   page:"1"
+									};
+							//PDFObject.embed("C:/Users/data12/git/SpringPRJ/WebContent/presentationPDF/docs.pdf","#embed",options);
+							PDFObject.embed("/presentationPDF/"+email+"/"+fileName,"#embed",{page: "1"});
 						</script>
-			    
+						<script>
+						var page = 1;
+						 function pdfPrevNext(sign){
+							 if (sign == "++") {
+								 page++;
+								PDFObject.embed("/presentationPDF/"+email+"/"+fileName,"#embed",{page: page});
+								 
+							 }else if(page > 0 && sign=='--') {
+								 page--;
+								PDFObject.embed("/presentationPDF/"+email+"/"+fileName,"#embed",{page: page});
+							 }
+							
+						}
+						
+						</script>
+						
+						<input type="hidden" id="page" value="1" />
+						
+			    <div style="width:50%;float:left">
+					<div onclick="javascript:pdfPrevNext('--')" class="btn btn-primary" style="cursor:pointer;width:92.5%;margin-left:5%;margin-right:2.5%;;margin-top:15px;margin-bottom:15px">이전</div>
+				</div>
+				<div style="width:50%;float:left">
+					<div onclick="javascript:pdfPrevNext('++')" class="btn btn-danger" style="width:92.5%;margin-left:2.5%;margin-right:5%;;margin-top:15px;margin-bottom:15px">다음</div>
+				</div>
 			        <div id="ajaxView" style="margin-top:15px">
 			            <!-- /.row -->
 			            <div class="row">
@@ -598,7 +621,7 @@ color:green;
 			}
 		})
 	});
- <%--  setInterval(function questionAll(){
+<%--  setInterval(function questionAll(){
 		var cont="";
 		$.ajax({
 			url:'/pt/questionAllForm.do',
@@ -707,6 +730,7 @@ $(function(){
 		});
 })
 </script>
+
 
 
 
@@ -893,11 +917,12 @@ function surveyForm(){
 				 	cont+='</div>';
 				 	cont+='<hr />';
 				 	cont+="<input type='hidden' name='svAnsOptType' value='1'/>";
+					cont+="<input type='hidden' name='manageCode' value='"+sList[0].manageCode+"'/>";
 				 	cont+='</form>';
 					cont+='<div style="width:100%;"><button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width:95%;margin-left:2.5%;margin-right:2.5%; margin-bottom:10%">설문 등록</button></div>'
 					$('#viewSurvey').html(cont);
 					alert("설문지가 등록되었습니다.")
-				
+				//manageCode 받아와서 넣어야됨
 				}else if(data.msg=="y"){
 					alert("설문지는 1개 이상 등록 할 수 없습니다.");
 				}
@@ -909,6 +934,7 @@ function surveyForm(){
 		
 	}).submit();
 	//inputAudTextCss();
+	
 }
 </script>
 <!-- 설문 유효성 색 및  검사 -->
@@ -941,6 +967,7 @@ function surveyForm(){
 			})
 	
 		} 
+
 	});
  	$(document).on('click','input:radio[name=gender]',function(){
  		$('input:radio[name=gender]').removeAttr('checked');
@@ -984,7 +1011,6 @@ function surveyForm(){
 			},
 			method:'post',
 			success:function(data){
-				console.log(data)
 				var cont="";
 				if(data!=0){
 					cont+='<div class="form-group" style="text-align:center">';
@@ -1004,8 +1030,6 @@ function surveyForm(){
 <!-- 투표 ajax 유효성 검사 -->
 <script>
 function voteForm(){
-	
-	
 	$('#voteForm').ajaxForm({
 		//유효성 검사
 		beforeSubmit:function(){
@@ -1067,8 +1091,8 @@ function voteForm(){
 		method:'post',
 		dataType:'text',
 		success:function(data){
-			console.log(data)
 			$('#viewVote').html(data);
+			
 			
 		},
 		error:function(){
@@ -1083,24 +1107,34 @@ function voteForm(){
 $(function(){
 	$('#tabVoteAud').click(function(){
 	var manageCode="<%=mpDTO.getManageCode().toString()%>";
-			$.ajax({
-				url:"/ptMain4.do?manageCode="+manageCode+"&svAnsOptType=0",
-				method:"get",
-				dataType:'text',
-				success:function(data){
-						$('#viewVote').html(data);
-				},
-				error:function(){
-					
-				}
+	if($('#voteCompleteCheck').val()=='0'){	
+		$.ajax({
+			url:"/ptMain4.do?manageCode="+manageCode+"&svAnsOptType=0",
+			method:"get",
+			dataType:'text',
+			success:function(data){
+					$('#viewVote').html(data);
+			},
+			error:function(){
+				
+			}
 		}); 
+	}else{
+    	var cont="";
+		cont+='<div class="form-group" style="text-align:center">';
+		cont+='<label><i class="fa fa-check-square-o fa-2x" style="color:green"> 투표 등록 완료</label>';
+		cont+='</div>';
+		$('#viewVote').html(cont)
+   
+    }
+
 		
 	})	
 })
 	
 
 	/* 	if($('#surveyCompleteCheck').val()=='0'){		
-			})
+			
 		}else{
 	    	var cont="";
 			cont+='<div class="form-group" style="text-align:center">';
@@ -1115,6 +1149,6 @@ $(function(){
 
 <!-- 설문지 완료 여부  체크 input -->
 <input type="hidden" id="surveyCompleteCheck" value="0"/>
-
+<input type="hidden" id="voteCompleteCheck" value="0"/>
 </body>
 </html>

@@ -1,10 +1,12 @@
+
 <%@page import="poly.util.CmmUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
 <html>
 	<head>
-	<%@include file="headerScript.jsp" %>	
+	<%@include file="headerScript.jsp" %>
+	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>	
     </head>
 	<body>
 
@@ -32,7 +34,9 @@
 										<i class="fa fa-search"></i>
 									</button>
 							<%} else { %>
-								<div><h2 style="color:white">Create Presentation</h2></div> 
+							
+							
+							<div><h2 style="color:white">Create Presentation</h2></div> 
 								<a class="main-button icon-button" href="/pt/ptReg.do">발표 방 생성</a>
 								<div><h2 style="color:white">Join Presentation</h2></div> 
 									<input type="text" style="background:white" name="manageCode" class="searchTerm"
@@ -40,6 +44,17 @@
 									<button id="searchPt" type="button" class="searchButton" onClick="codeJoinPtMain()">
 										<i class="fa fa-search"></i>
 									</button>
+								<%-- <%if(snsVal.equals("y")){ %>
+								<div><h2 style="color:white">Join Presentation</h2></div> 
+									<input type="text" style="background:white" name="manageCode" class="searchTerm"
+										placeholder="#코드번호를 입력해주세요">
+									<button id="searchPt" type="button" class="searchButton" onClick="codeJoinPtMain()">
+										<i class="fa fa-search"></i>
+									</button>
+								<%}else{ %>
+								
+								<%} %> --%>
+								
 							<%} %>
 							</div>
 						</div>
@@ -217,6 +232,7 @@
 	}
 	
 	</script>
+	
 	<!-- 아이디 찾기 -->
 	<script>
 	function idFind(){
@@ -291,8 +307,6 @@
 	}
 	
 	</script>
-	
 
-<!--  수정확인중 11월 2일 9시 41분 마스터 -->
 	</body>
 </html>

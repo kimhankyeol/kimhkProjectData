@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRange;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,10 @@ import poly.service.IPtService;
 import poly.service.IQuestionService;
 import poly.service.impl.UserService;
 import poly.util.CmmUtil;
+import poly.util.Email;
+import poly.util.Email2;
+import poly.util.EmailSender;
+import poly.util.EmailSender2;
 import poly.util.PPTtoPDFConverter;
 
 /*
@@ -52,6 +57,8 @@ public class PtController {
 	private IPtService ptService;
 	@Resource(name="QuestionService")
 	private IQuestionService questionService;
+	@Autowired
+	private EmailSender2 emailSender2;
 	
 	String filePathOrg="C:\\Users\\data12\\git\\SpringPRJ\\WebContent\\presentationPDF\\";
 	
@@ -134,53 +141,103 @@ public class PtController {
 		String fileServerName="";
 		String fileOrgName=file.getOriginalFilename();
 		String extended = fileOrgName.substring(fileOrgName.indexOf("."),fileOrgName.length());
-		log.info(extended);
-		String now = new SimpleDateFormat("yyyyMMddhmsS").format(new Date()); //현재시간 나타내는 변수
-		log.info(now);
-		fileServerName=filePath+now+extended;//새로운 파일명으로 저장할 위치경로 + 시간 + 확장자 
-		String fileOrgNameLoc=filePath+fileOrgName;
-		File newFile =new File(fileOrgNameLoc);
-		if(!newFile.isDirectory()) {
-			newFile.mkdirs();
-		}
-		file.transferTo(newFile);//이 transferTo 는 MultiFile 에 내장된것/ 메소드를 사용해서 원하는 위치에 저장
-		//InputStream을 얻은 다음에 직접 처리를 해줘도 되지만 성능 좋고 편하니까 transferTo()
-		//데이터를 DTO에 세팅
-		PreFileDTO pfDTO= new PreFileDTO();
-		//ppt 파일을 pdf로
-		String pdfFileName=PPTtoPDFConverter.PPTtoPDFConverter(fileOrgName,email);
-		pfDTO.setFileOrgName(pdfFileName);
-		pfDTO.setFilePath(filePath);
-		pfDTO.setFileServerName(fileServerName);
-		pfDTO.setRegNo(userNo);
-		pfDTO.setFileSize(String.valueOf(fileSize));
+		if(extended.equals(".pdf")) {
+			log.info(extended);
+			String now = new SimpleDateFormat("yyyyMMddhmsS").format(new Date()); //현재시간 나타내는 변수
+			log.info(now);
+			fileServerName=filePath+now+extended;//새로운 파일명으로 저장할 위치경로 + 시간 + 확장자 
+			String fileOrgNameLoc=filePath+fileOrgName;
+			File newFile =new File(fileOrgNameLoc);
+			if(!newFile.isDirectory()) {
+				newFile.mkdirs();
+			}
+			file.transferTo(newFile);//이 transferTo 는 MultiFile 에 내장된것/ 메소드를 사용해서 원하는 위치에 저장
+			//InputStream을 얻은 다음에 직접 처리를 해줘도 되지만 성능 좋고 편하니까 transferTo()
+			//데이터를 DTO에 세팅
+			PreFileDTO pfDTO= new PreFileDTO();
+			//ppt 파일을 pdf로
+			pfDTO.setFileOrgName(fileOrgName);
+			pfDTO.setFilePath(filePath);
+			pfDTO.setFileServerName(fileServerName);
+			pfDTO.setRegNo(userNo);
+			pfDTO.setFileSize(String.valueOf(fileSize));
 
-		//ppt 파일 삭제
-		
-		////////////////////////////////
-		HashMap<String, Object> hMap = new HashMap<String, Object>();
-		hMap.put("mpDTO", mpDTO);
-		hMap.put("pfDTO", pfDTO);
-		//글 자료 등록
-		hMap=ptService.insertPt(hMap);
-		int result=Integer.parseInt(hMap.get("resultMP1").toString())+Integer.parseInt(hMap.get("resultMP2").toString())+Integer.parseInt(hMap.get("resultMP3").toString())+Integer.parseInt(hMap.get("resultMP4").toString());
-		String msg="";
-		String url="";
-		
-		log.info("합산"+result);
-		if(result==4) {
-			msg="발표 글, 자료가 등록 되었습니다.";
-			url="/home.do";
+			//ppt 파일 삭제
+			
+			////////////////////////////////
+			HashMap<String, Object> hMap = new HashMap<String, Object>();
+			hMap.put("mpDTO", mpDTO);
+			hMap.put("pfDTO", pfDTO);
+			//글 자료 등록
+			hMap=ptService.insertPt(hMap);
+			int result=Integer.parseInt(hMap.get("resultMP1").toString())+Integer.parseInt(hMap.get("resultMP2").toString())+Integer.parseInt(hMap.get("resultMP3").toString())+Integer.parseInt(hMap.get("resultMP4").toString());
+			String msg="";
+			String url="";
+			
+			log.info("합산"+result);
+			if(result==4) {
+				msg="발표 글, 자료가 등록 되었습니다.";
+				url="/home.do";
+			}else {
+				msg="등록되지 않습니다.";
+				url="redirect:/home.do";
+			}
+			model.addAttribute("msg",msg);
+			model.addAttribute("url",url);
+			//초기화
+			hMap=null;
+			pfDTO=null;
+			mpDTO=null;
 		}else {
-			msg="등록되지 않습니다.";
-			url="redirect:/home.do";
+			log.info(extended);
+			String now = new SimpleDateFormat("yyyyMMddhmsS").format(new Date()); //현재시간 나타내는 변수
+			log.info(now);
+			fileServerName=filePath+now+extended;//새로운 파일명으로 저장할 위치경로 + 시간 + 확장자 
+			String fileOrgNameLoc=filePath+fileOrgName;
+			File newFile =new File(fileOrgNameLoc);
+			if(!newFile.isDirectory()) {
+				newFile.mkdirs();
+			}
+			file.transferTo(newFile);//이 transferTo 는 MultiFile 에 내장된것/ 메소드를 사용해서 원하는 위치에 저장
+			//InputStream을 얻은 다음에 직접 처리를 해줘도 되지만 성능 좋고 편하니까 transferTo()
+			//데이터를 DTO에 세팅
+			PreFileDTO pfDTO= new PreFileDTO();
+			//ppt 파일을 pdf로
+			String pdfFileName=PPTtoPDFConverter.PPTtoPDFConverter(fileOrgName,email);
+			pfDTO.setFileOrgName(pdfFileName);
+			pfDTO.setFilePath(filePath);
+			pfDTO.setFileServerName(fileServerName);
+			pfDTO.setRegNo(userNo);
+			pfDTO.setFileSize(String.valueOf(fileSize));
+
+			//ppt 파일 삭제
+			
+			////////////////////////////////
+			HashMap<String, Object> hMap = new HashMap<String, Object>();
+			hMap.put("mpDTO", mpDTO);
+			hMap.put("pfDTO", pfDTO);
+			//글 자료 등록
+			hMap=ptService.insertPt(hMap);
+			int result=Integer.parseInt(hMap.get("resultMP1").toString())+Integer.parseInt(hMap.get("resultMP2").toString())+Integer.parseInt(hMap.get("resultMP3").toString())+Integer.parseInt(hMap.get("resultMP4").toString());
+			String msg="";
+			String url="";
+			
+			log.info("합산"+result);
+			if(result==4) {
+				msg="발표 글, 자료가 등록 되었습니다.";
+				url="/home.do";
+			}else {
+				msg="등록되지 않습니다.";
+				url="redirect:/home.do";
+			}
+			model.addAttribute("msg",msg);
+			model.addAttribute("url",url);
+			//초기화
+			hMap=null;
+			pfDTO=null;
+			mpDTO=null;
 		}
-		model.addAttribute("msg",msg);
-		model.addAttribute("url",url);
-		//초기화
-		hMap=null;
-		pfDTO=null;
-		mpDTO=null;
+	
 		log.info(this.getClass()+"end pt title fileupload");
 		return "/alert";
 	}
@@ -276,6 +333,31 @@ public class PtController {
 		return "/pt/ptMain3";
 				
 	}
+/*	@RequestMapping(value="/ptMain4.do")
+	public String getPtMain4(HttpServletRequest req , HttpServletResponse resp,Model model) throws Exception{
+		log.info(this.getClass()+"start");
+		String manageCode= req.getParameter("manageCode");
+		String svAnsOptType=req.getParameter("svAnsOptType");
+		SurveyDTO sDTO =new SurveyDTO();
+		List<SurveyDTO> sList =new ArrayList<>();
+		sDTO.setManageCode(manageCode);
+		sDTO.setSurveyAnsOptType(svAnsOptType);
+		
+		sList=ptService.getSurveyView(sDTO);
+		String msg="y";
+		if(sList==null){
+			msg="n";
+			model.addAttribute("msg",msg);
+		}
+		
+		model.addAttribute("sList",sList);
+		model.addAttribute("msg",msg);
+		log.info(this.getClass()+"end");
+		
+		return "/pt/ptMain4";
+				
+	}*/
+	
 	
 	
 	
@@ -444,14 +526,14 @@ public class PtController {
 	String gender=req.getParameter("gender");
 	String age=req.getParameter("age");
 	String svAnsOptType=req.getParameter("svAnsOptType");
-	log.info("429:"+svAnsOptType);
-	
+	String manageCode=req.getParameter("manageCode");
+
 	
 	int result=0;
 		sDTO.setSurveyAnsAudGender(gender);
 		sDTO.setSurveyAnsAudAge(age);
-		
 		sDTO.setSurveyAnsOptType(svAnsOptType);
+		sDTO.setManageCode(manageCode);
 	for(int i = 0 ;i<surveyAudVal.size();i++) {
 		sDTO.setSurveyTitleNo(surveyTitleNo.get(i));
 		sDTO.setSurveyAnsOptValue(surveyAudVal.get(i));
@@ -529,13 +611,16 @@ public class PtController {
 		String voteTitle=CmmUtil.nvl(req.getParameter("voteTitle"));
 		String svAnsOptType=CmmUtil.nvl(req.getParameter("svAnsOptType"));
 		String voteRegister=CmmUtil.nvl(req.getParameter("voteRegister"));
+		
 		String manageCode=CmmUtil.nvl(req.getParameter("manageCode"));
 		String regNo=CmmUtil.nvl(req.getParameter("regNo"));
 		String ckRadio0=CmmUtil.nvl(req.getParameter("ckRadio0"));
 		String ckRadio1=CmmUtil.nvl(req.getParameter("ckRadio1"));
 		String ckRadio2=CmmUtil.nvl(req.getParameter("ckRadio2"));
 		
-	
+		for(int i=0; i<voteQuestion.size();i++) {
+			log.info(voteQuestion.get(i).toString());
+		}
 		SurveyDTO sDTO= new SurveyDTO();
 		SurveyDTO sDTO1 = new SurveyDTO();
 		SurveyDTO sDTO2 = new SurveyDTO();
@@ -556,6 +641,7 @@ public class PtController {
 		int count=0;
 		//설문 투표 등록은 각각 한개씩
 		count=ptService.getSurveyCount(sDTO);
+		log.info(count);
 		if(count<1) {
 		/*투표 val1 ,val2,val3*/
 		List<HashMap<String,Object>> sList = new ArrayList<>();
@@ -573,7 +659,10 @@ public class PtController {
 			sDTO1.setCkRadio(ckRadio0);
 			sDTO1.setSurveyAnsOptNo("1");
 			sDTO1.setManageCode(manageCode);
+			log.info(sDTO1.getManageCode());
+			
 			sDTO1.setRegNo(regNo);
+			log.info(sDTO1.getRegNo());
 			for(int i =0;i<voteVal.size();i++) {
 				HashMap<String,Object> hMap=new HashMap<>();
 				
@@ -584,7 +673,7 @@ public class PtController {
 				hMap.put("surveyAnsOptNo",sDTO1.getSurveyAnsOptNo());
 				sDTO1.setSurveyAnsOptValue(voteVal.get(i));
 				hMap.put("surveyAnsOptValue", sDTO1.getSurveyAnsOptValue());
-				hMap.put("manageCode", sDTO2.getManageCode());
+				hMap.put("manageCode", sDTO1.getManageCode());
 				hMap.put("regNo",sDTO1.getRegNo());
 				sList.add(hMap);
 				hMap=null;
@@ -771,7 +860,7 @@ public class PtController {
 		sDTO2=null;
 		sDTO3=null;
 		}else {
-			String msg="투표는 1개만 등록가능합니다.";
+			String msg="y";
 			model.addAttribute("msg",msg);
 			
 		}
@@ -781,6 +870,7 @@ public class PtController {
 	
 	@RequestMapping(value="/ptMain4")
 	public String getPtMain4(HttpServletRequest req,Model model ) throws Exception {
+		log.info(this.getClass()+"start");
 		String surveyNo="";
 		String manageCode=req.getParameter("manageCode");
 		String svAnsOptType =req.getParameter("svAnsOptType");
@@ -789,46 +879,270 @@ public class PtController {
 		log.info(svAnsOptType);
 		String msg="";
 		SurveyDTO sDTO= new SurveyDTO();
+		SurveyDTO sDTO1= new SurveyDTO();
+		SurveyDTO sDTO2= new SurveyDTO();
+		SurveyDTO sDTO3= new SurveyDTO();
 		List<SurveyDTO> sList1 = new ArrayList<>();
 		List<SurveyDTO> sList2 = new ArrayList<>();
 		List<SurveyDTO> sList3 = new ArrayList<>();
 		sDTO.setManageCode(manageCode);
 		sDTO.setSurveyAnsOptType(svAnsOptType);
+		sDTO1.setManageCode(manageCode);
+		sDTO1.setSurveyAnsOptType(svAnsOptType);
+		sDTO2.setManageCode(manageCode);
+		sDTO2.setSurveyAnsOptType(svAnsOptType);
+		sDTO3.setManageCode(manageCode);
+		sDTO3.setSurveyAnsOptType(svAnsOptType);
 		surveyNo=ptService.getVoteSurveyNo(sDTO);
-		sDTO.setSurveyNo(surveyNo);
-		sList1=ptService.getVoteValCount1(sDTO);
-		sList2=ptService.getVoteValCount2(sDTO);
-		sList3=ptService.getVoteValCount3(sDTO);
-		if(sList1!=null&&sList2==null&&sList3==null) {
+		sDTO1.setSurveyNo(surveyNo);
+		sDTO2.setSurveyNo(surveyNo);
+		sDTO3.setSurveyNo(surveyNo);
+		sList1=ptService.getVoteValCount1(sDTO1);
+		log.info(sList1);
+		sList2=ptService.getVoteValCount2(sDTO2);
+		log.info(sList2);
+		sList3=ptService.getVoteValCount3(sDTO3);
+		log.info(sList3);
+		if(sList1.size()!=0&&sList2.size()==0&&sList3.size()==0) {
+			log.info("1번실행");
 			model.addAttribute("sList1", sList1);
-			msg="n";
+			msg="y";
 			model.addAttribute("msg",msg);
-		}else if(sList1!=null&&sList2!=null&&sList3==null) {
+		}else if(sList1.size()!=0&&sList2.size()!=0&&sList3.size()==0) {
+			log.info("2번실행");
 			model.addAttribute("sList1", sList1);
 			model.addAttribute("sList2", sList2);
-			msg="n";
+			msg="y";
 			model.addAttribute("msg",msg);
-		}else if(sList1!=null&&sList2!=null&&sList3!=null) {
+		}else if(sList1.size()!=0&&sList2.size()!=0&&sList3.size()!=0) {
+			log.info("3번실행");
 			model.addAttribute("sList1", sList1);
 			model.addAttribute("sList2", sList2);
 			model.addAttribute("sList3", sList3);
-			msg="n";
-			model.addAttribute("msg",msg);
-		}else if(sList1==null&&sList2==null&&sList3==null) {
 			msg="y";
+			model.addAttribute("msg",msg);
+		}else if(sList1.size()==0&&sList2.size()==0&&sList3.size()==0) {
+			msg="n";
 			model.addAttribute("msg",msg);
 		}
 	
-		
-				
-		
 		sList1=null;
 		sList2=null;
 		sList3=null;
-				
+		log.info(this.getClass()+"end");
 		return "/pt/ptMain4";
 	}
 	
-
-	
+	//투표 답등록
+	@RequestMapping(value="/pt/voteAudReg")
+	public @ResponseBody int insertVote(HttpServletRequest req,
+			@RequestParam(value="voteVal1" ,required=false) List<String> voteVal1,
+			@RequestParam(value="voteVal2" ,required=false) List<String> voteVal2,
+			@RequestParam(value="voteVal3" ,required=false) List<String> voteVal3,
+			@RequestParam(value="surveyTitleQ1" ,required=false) String surveyTitleQ1,
+			@RequestParam(value="surveyTitleNo1" ,required=false) String surveyTitleNo1,
+			@RequestParam(value="svAnsOptNo1" ,required=false) String svAnsOptNo1,
+			@RequestParam(value="surveyTitleQ2" ,required=false) String surveyTitleQ2,
+			@RequestParam(value="surveyTitleNo2" ,required=false) String surveyTitleNo2,
+			@RequestParam(value="svAnsOptNo2" ,required=false) String svAnsOptNo2,
+			@RequestParam(value="surveyTitleQ3" ,required=false) String surveyTitleQ3,
+			@RequestParam(value="surveyTitleNo3" ,required=false) String surveyTitleNo3,
+			@RequestParam(value="svAnsOptNo3" ,required=false) String svAnsOptNo3,
+			@RequestParam(value="gender" ,required=false) String gender,
+			@RequestParam(value="age" ,required=false) String age,
+			@RequestParam(value="svAnsOptType",required=false) String svAnsOptType,
+			@RequestParam(value="manageCode",required=false) String manageCode,
+			Model model
+			) throws Exception{
+		int result=0;
+		String msg="";	
+		List<HashMap<String,Object>> sList = new ArrayList<>();
+		SurveyDTO sDTO1 = new SurveyDTO();
+		SurveyDTO sDTO2 = new SurveyDTO();
+		SurveyDTO sDTO3 = new SurveyDTO();
+		
+		sDTO1.setSurveyAnsAudGender(gender);
+		sDTO1.setSurveyAnsAudAge(age);
+		sDTO1.setSurveyAnsOptType(svAnsOptType);
+		sDTO1.setManageCode(manageCode);
+		
+		sDTO2.setSurveyAnsAudGender(gender);
+		sDTO2.setSurveyAnsAudAge(age);
+		sDTO2.setSurveyAnsOptType(svAnsOptType);
+		sDTO2.setManageCode(manageCode);
+		
+		sDTO3.setSurveyAnsAudGender(gender);
+		sDTO3.setSurveyAnsAudAge(age);
+		sDTO3.setSurveyAnsOptType(svAnsOptType);
+		sDTO3.setManageCode(manageCode);
+		if(voteVal1!=null&& voteVal2==null && voteVal3==null) {
+			log.info("vote1번");
+			HashMap<String, Object> hMap = new HashMap<>();
+			sDTO1.setSurveyTitleQ(surveyTitleQ1);
+			sDTO1.setSurveyTitleNo(surveyTitleNo1);
+			sDTO1.setSurveyAnsOptNo(svAnsOptNo1);
+			hMap.put("gender",sDTO1.getSurveyAnsAudGender());
+			hMap.put("age",sDTO1.getSurveyAnsAudAge());
+			hMap.put("svAnsOptType",sDTO1.getSurveyAnsOptType());
+			hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+			hMap.put("surveyTitleNo",sDTO1.getSurveyTitleNo());
+			hMap.put("manageCode",sDTO1.getManageCode());
+			hMap.put("svAnsOptNo",	sDTO1.getSurveyAnsOptNo());
+			hMap.put("svAnsOptType",sDTO1.getSurveyAnsOptType());
+			
+			
+			for(int i = 0 ;i<voteVal1.size();i++) {
+				//sDTO1.setSurveyAnsOptValue(voteVal1.get(i));
+				sDTO1.setSurveyAnsOptValue(voteVal1.get(i));
+				hMap.put("svAnsOptValue",sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			
+			result=ptService.insertVoteAnsAud(sList);
+			
+		
+		}else if(voteVal1!=null&& voteVal2!=null && voteVal3==null) {
+			log.info("vote2번");
+			
+			
+			for(int i = 0 ;i<voteVal1.size();i++) {
+				HashMap<String, Object> hMap = new HashMap<>();
+				sDTO1.setSurveyTitleQ(surveyTitleQ1);
+				sDTO1.setSurveyTitleNo(surveyTitleNo1);
+				sDTO1.setSurveyAnsOptNo(svAnsOptNo1);
+				hMap.put("gender",sDTO1.getSurveyAnsAudGender());
+				hMap.put("age",sDTO1.getSurveyAnsAudAge());
+				hMap.put("svAnsOptType",sDTO1.getSurveyAnsOptType());
+				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+				hMap.put("surveyTitleNo",sDTO1.getSurveyTitleNo());
+				hMap.put("manageCode",sDTO1.getManageCode());
+				hMap.put("svAnsOptNo",	sDTO1.getSurveyAnsOptNo());
+				sDTO1.setSurveyAnsOptValue(voteVal1.get(i));
+				hMap.put("svAnsOptValue",sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result=ptService.insertVoteAnsAud(sList);
+			sList=new ArrayList<>();
+			
+			for(int i = 0 ;i<voteVal2.size();i++) {
+				HashMap<String, Object> hMap = new HashMap<>();
+				sDTO2.setSurveyTitleQ(surveyTitleQ2);
+				sDTO2.setSurveyTitleNo(surveyTitleNo2);
+				sDTO2.setSurveyAnsOptNo(svAnsOptNo2);
+				hMap.put("gender",sDTO2.getSurveyAnsAudGender());
+				hMap.put("age",sDTO2.getSurveyAnsAudAge());
+				hMap.put("svAnsOptType",sDTO2.getSurveyAnsOptType());
+				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
+				hMap.put("surveyTitleNo",sDTO2.getSurveyTitleNo());
+				hMap.put("manageCode",sDTO2.getManageCode());
+				hMap.put("svAnsOptNo",	sDTO2.getSurveyAnsOptNo());
+				sDTO2.setSurveyAnsOptValue(voteVal2.get(i));
+				hMap.put("svAnsOptValue",sDTO2.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result=ptService.insertVoteAnsAud(sList);
+			sList=new ArrayList<>();
+		
+			
+		}else if(voteVal1!=null&& voteVal2!=null && voteVal3!=null) {
+			
+			log.info("vote3번");
+			
+			
+			
+			for(int i = 0 ;i<voteVal1.size();i++) {
+				HashMap<String, Object> hMap = new HashMap<>();
+				sDTO1.setSurveyTitleQ(surveyTitleQ1);
+				sDTO1.setSurveyTitleNo(surveyTitleNo1);
+				sDTO1.setSurveyAnsOptNo(svAnsOptNo1);
+				hMap.put("gender",sDTO1.getSurveyAnsAudGender());
+				hMap.put("age",sDTO1.getSurveyAnsAudAge());
+				hMap.put("svAnsOptType",sDTO1.getSurveyAnsOptType());
+				hMap.put("surveyTitleQ",sDTO1.getSurveyTitleQ());
+				hMap.put("surveyTitleNo",sDTO1.getSurveyTitleNo());
+				hMap.put("manageCode",sDTO1.getManageCode());
+				hMap.put("svAnsOptNo",	sDTO1.getSurveyAnsOptNo());
+				sDTO1.setSurveyAnsOptValue(voteVal1.get(i));
+				hMap.put("svAnsOptValue",sDTO1.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result=ptService.insertVoteAnsAud(sList);
+			sList=new ArrayList<>();
+			
+			
+			for(int i = 0 ;i<voteVal2.size();i++) {
+				HashMap<String, Object> hMap = new HashMap<>();
+				sDTO2.setSurveyTitleQ(surveyTitleQ2);
+				sDTO2.setSurveyTitleNo(surveyTitleNo2);
+				sDTO2.setSurveyAnsOptNo(svAnsOptNo2);
+				hMap.put("gender",sDTO2.getSurveyAnsAudGender());
+				hMap.put("age",sDTO2.getSurveyAnsAudAge());
+				hMap.put("svAnsOptType",sDTO2.getSurveyAnsOptType());
+				hMap.put("surveyTitleQ",sDTO2.getSurveyTitleQ());
+				hMap.put("surveyTitleNo",sDTO2.getSurveyTitleNo());
+				hMap.put("manageCode",sDTO2.getManageCode());
+				hMap.put("svAnsOptNo",	sDTO2.getSurveyAnsOptNo());
+				sDTO2.setSurveyAnsOptValue(voteVal2.get(i));
+				hMap.put("svAnsOptValue",sDTO2.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result=ptService.insertVoteAnsAud(sList);
+			sList=new ArrayList<>();
+			
+			
+			for(int i = 0 ;i<voteVal3.size();i++) {
+				HashMap<String, Object> hMap = new HashMap<>();
+				sDTO3.setSurveyTitleQ(surveyTitleQ3);
+				sDTO3.setSurveyTitleNo(surveyTitleNo3);
+				sDTO3.setSurveyAnsOptNo(svAnsOptNo3);
+				hMap.put("gender",sDTO3.getSurveyAnsAudGender());
+				hMap.put("age",sDTO3.getSurveyAnsAudAge());
+				hMap.put("svAnsOptType",sDTO3.getSurveyAnsOptType());
+				hMap.put("surveyTitleQ",sDTO3.getSurveyTitleQ());
+				hMap.put("surveyTitleNo",sDTO3.getSurveyTitleNo());
+				hMap.put("manageCode",sDTO3.getManageCode());
+				hMap.put("svAnsOptNo",	sDTO3.getSurveyAnsOptNo());
+				sDTO3.setSurveyAnsOptValue(voteVal3.get(i));
+				hMap.put("svAnsOptValue",sDTO3.getSurveyAnsOptValue());
+				sList.add(hMap);
+				hMap=null;
+			}
+			result=ptService.insertVoteAnsAud(sList);
+		}
+		
+		return result;
+	}
+	//친구 초대 이메일 컨트롤러
+	@RequestMapping(value="/inviteFriend")
+	public String sendInviteFriend(HttpServletRequest req,@RequestParam(value="inviteFriend",required=false) List<String> inviteFriend,Model model) throws Exception{
+		String email="";
+		String name=req.getParameter("name");
+		String manageCode=req.getParameter("manageCode");
+		String userNo=req.getParameter("userNo");
+		//이메일을 보내기 위한 생성자
+		Email2 sendEmail=new Email2();
+		HashMap<String, Object> hMap = new HashMap<>();
+		hMap.put("manageCode", manageCode);
+		for(int i =0 ; i<inviteFriend.size();i++) {
+			email=inviteFriend.get(i);
+			sendEmail.setReciver(email);
+			sendEmail.setSubject(name+"님이 초대를 보냈습니다.");
+			sendEmail.setContent(sendEmail.setContents(hMap));
+			emailSender2.SendEmail(sendEmail);
+		}
+		String msg="";
+		String url="";
+		msg = "청중들에게 방 번호를 보냈습니다.";
+		url = "/pt/ptManagement.do?userNo="+userNo;
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		
+		return "/alert";
+	}
 }

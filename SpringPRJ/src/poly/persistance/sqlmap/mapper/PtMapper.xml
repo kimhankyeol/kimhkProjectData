@@ -178,11 +178,11 @@
 	<insert id="insertSurveyAnsAud" parameterType="SurveyDTO">
 	INSERT INTO SV_ANS_AUD
 	 (
-	 SV_ANS_AUD_GENDER,SV_ANS_AUD_AGE,SV_ANS_OPT_TYPE,SV_ANS_OPT_VALUE,REGDATE,SV_T_NO
+	 SV_ANS_AUD_GENDER,SV_ANS_AUD_AGE,SV_ANS_OPT_TYPE,SV_ANS_OPT_VALUE,REGDATE,SV_T_NO,MANAGE_CODE,SV_ANS_OPT_NO,SV_T_QTITLE
 	 )
 	VALUES
 	(
-	#{surveyAnsAudGender},#{surveyAnsAudAge},#{surveyAnsOptType},#{surveyAnsOptValue},now(),#{surveyTitleNo}
+	#{surveyAnsAudGender},#{surveyAnsAudAge},#{surveyAnsOptType},#{surveyAnsOptValue},now(),#{surveyTitleNo},#{manageCode},#{surveyAnsOptNo},#{surveyTitleQ}
 	)
 	
 	</insert>
@@ -254,7 +254,7 @@
 	
 	</select>
 	<select id="getVoteValCount1" parameterType="SurveyDTO" resultType="SurveyDTO">
-	SELECT
+	SELECT 
 	S.SURVEY_NO AS surveyNo,
 		S.SURVEY_TITLE AS surveyTitle,
 		S.SURVEY_REGISTER AS surveyRegister,
@@ -265,7 +265,7 @@
 		SVT.SV_T_QTITLE AS surveyTitleQ,
 		SVT.SV_ANS_OPT_VALUE AS surveyAnsOptValue,
 		SVT.SV_ANS_OPT_NO as surveyAnsOptNo,
-		SVT.SV_ANS_OPT_NO as surveyAnsOptType,
+		SVT.SV_ANS_OPT_TYPE as surveyAnsOptType,
 		SVT.SV_CKRADIO as ckRadio,
 		MP.MANAGE_TITLE AS manageTitle
 	FROM SURVEY S 
@@ -286,7 +286,7 @@
 		SVT.SV_T_QTITLE AS surveyTitleQ,
 		SVT.SV_ANS_OPT_VALUE AS surveyAnsOptValue,
 		SVT.SV_ANS_OPT_NO as surveyAnsOptNo,
-		SVT.SV_ANS_OPT_NO as surveyAnsOptType,
+		SVT.SV_ANS_OPT_TYPE as surveyAnsOptType,
 		SVT.SV_CKRADIO as ckRadio,
 		MP.MANAGE_TITLE AS manageTitle
 	FROM SURVEY S 
@@ -307,7 +307,7 @@
 		SVT.SV_T_QTITLE AS surveyTitleQ,
 		SVT.SV_ANS_OPT_VALUE AS surveyAnsOptValue,
 		SVT.SV_ANS_OPT_NO as surveyAnsOptNo,
-		SVT.SV_ANS_OPT_NO as surveyAnsOptType,
+		SVT.SV_ANS_OPT_TYPE as surveyAnsOptType,
 		SVT.SV_CKRADIO as ckRadio,
 		MP.MANAGE_TITLE AS manageTitle
 	FROM SURVEY S 
@@ -322,4 +322,17 @@
 	FROM SV_TITLE
 	WHERE SV_ANS_OPT_TYPE=#{surveyAnsOptType} AND MANAGE_CODE=#{manageCode}
 	</select>
+	<!-- 청중 투표 등록 -->
+	<insert id="insertVoteAnsAud" parameterType="map" >
+	INSERT INTO SV_ANS_AUD
+	 (
+	 SV_ANS_AUD_GENDER,SV_ANS_AUD_AGE,SV_ANS_OPT_TYPE,SV_ANS_OPT_VALUE,REGDATE,SV_T_NO,MANAGE_CODE,SV_ANS_OPT_NO,SV_T_QTITLE
+	 )
+	VALUES
+	<foreach collection="list" item="item" separator="," >
+	(
+	#{item.gender},#{item.age},#{item.svAnsOptType},#{item.svAnsOptValue},now(),#{item.surveyTitleNo},#{item.manageCode},#{item.svAnsOptNo},#{item.surveyTitleQ}
+	)
+	</foreach>
+	</insert>
 </mapper>

@@ -8,13 +8,15 @@
 	EMAIL,
 	USERNAME,
 	PASSWORD,
-	REGDATE
+	REGDATE,
+	TEL
 	)
 	VALUES(
 	#{email},
 	#{userName},
 	#{passWord},
-	now()
+	now(),
+	#{tel}
 	)
 	
 	</insert>
@@ -60,4 +62,26 @@
 	WHERE
 		EMAIL=#{email} AND USERNAME=#{userName}
  	</update>
+ 	<insert id="insertUserRegSns" parameterType="UserDTO">
+	INSERT INTO USER(
+	EMAIL,
+	USERNAME,
+	REGDATE
+	)
+	VALUES(
+	#{email},
+	#{userName},
+	now()
+	)
+	<selectKey  resultType="string" keyProperty="userNo" order="AFTER" >
+		SELECT last_insert_id() FROM DUAL;
+	</selectKey> 
+	
+	</insert>
+ 	<select id="getFindUserNo" parameterType="UserDTO" resultType="string">
+ 	SELECT USER_NO AS USERNO
+	FROM USER
+	WHERE USERNAME=#{userName} AND EMAIL=#{email}
+ 	</select>
+ 	
 </mapper>

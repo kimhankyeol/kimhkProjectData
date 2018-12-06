@@ -193,6 +193,12 @@ public class PtService implements IPtService{
 		// TODO Auto-generated method stub
 		return ptMapper.getVoteSurveyNo(sDTO);
 	}
+	//청중 투표 등록
+	@Override
+	public int insertVoteAnsAud(List<HashMap<String, Object>> sList) throws Exception {
+		// TODO Auto-generated method stub
+		return ptMapper.insertVoteAnsAud(sList);
+	}
 
 
 

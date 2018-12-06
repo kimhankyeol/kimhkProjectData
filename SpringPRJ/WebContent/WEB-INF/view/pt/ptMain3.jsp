@@ -67,6 +67,7 @@
 	</div>
 	<hr />
 	<input type='hidden' name='svAnsOptType' value='1' />
+	<input type='hidden' name='manageCode' value='<%=sList.get(0).getManageCode()%>'/>
 </form>
 <div style="width: 100%;">
 	<button class="btn btn-success" onclick="javascript:surveyAudRegForm()" style="width: 95%; margin-left: 2.5%; margin-right: 2.5%; margin-bottom: 10%">설문 등록</button>

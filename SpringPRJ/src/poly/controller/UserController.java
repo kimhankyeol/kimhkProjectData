@@ -213,4 +213,12 @@ public class UserController {
 			return null;
 		}
 		
+		@RequestMapping(value="mypage")
+		public String mypage( ) throws Exception{
+			
+			
+			
+			return "/user/myPage";
+		}
+		
 }
