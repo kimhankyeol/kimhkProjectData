@@ -621,7 +621,7 @@ color:green;
 			}
 		})
 	});
-<%--  setInterval(function questionAll(){
+  setInterval(function questionAll(){
 		var cont="";
 		$.ajax({
 			url:'/pt/questionAllForm.do',
@@ -657,7 +657,7 @@ color:green;
 				alert('에러');
 			}
 		})
-	},1000); --%>
+	},1000); 
 	/* setInterval(
 	,1000);  지우면 안됨*/
 	
@@ -1087,13 +1087,12 @@ function voteForm(){
 					}
 				})
 			}
+		
 		},
 		method:'post',
-		dataType:'text',
+ 		dataType:'text',
 		success:function(data){
 			$('#viewVote').html(data);
-			
-			
 		},
 		error:function(){
 			
@@ -1101,6 +1100,8 @@ function voteForm(){
 	}).submit();
 	
 }
+
+
 </script>
 <!-- 투표화면 보여주기 -->
 <script>
@@ -1141,7 +1142,7 @@ $(function(){
 			cont+='<label><i class="fa fa-check-square-o fa-2x" style="color:green"> 설문지 등록 완료</label>';
 			cont+='</div>';
 			$('#viewSurvey').html(cont)
-	   
+	   x
 	    } */
 	    
 </script>

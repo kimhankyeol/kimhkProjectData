@@ -617,10 +617,7 @@ public class PtController {
 		String ckRadio0=CmmUtil.nvl(req.getParameter("ckRadio0"));
 		String ckRadio1=CmmUtil.nvl(req.getParameter("ckRadio1"));
 		String ckRadio2=CmmUtil.nvl(req.getParameter("ckRadio2"));
-		
-		for(int i=0; i<voteQuestion.size();i++) {
-			log.info(voteQuestion.get(i).toString());
-		}
+	
 		SurveyDTO sDTO= new SurveyDTO();
 		SurveyDTO sDTO1 = new SurveyDTO();
 		SurveyDTO sDTO2 = new SurveyDTO();

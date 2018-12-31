@@ -35,7 +35,7 @@
 														Kakao.API.request({
 															url: '/v2/user/me',
 															success: function(res){
-																alert(JSON.stringify(res));
+															/* 	alert(JSON.stringify(res)); */
 																kId = JSON.stringify(res.id);
 																kName = JSON.stringify(res.properties.nickname);
 																kEmail = JSON.stringify(res.kakao_account.email);

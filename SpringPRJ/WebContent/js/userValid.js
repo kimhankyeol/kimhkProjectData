@@ -145,7 +145,6 @@ $(function(){
 					return false;
 					
 				}else{
-					alert("회원가입 성공!!");
 				
 				}
 				

@@ -65,11 +65,11 @@ public class UserController {
 			if(result ==1 ) { //반환된갯수가 0이아니면 즉 회원가입이 되면 
 				//회원가입이 정상적으로 이루어진 상태
 				msg="회원가입에 성공하셨습니다.";
-				url = "/main.do";
+				url = "/home.do";
 			}else {
 				//회원가입이 이루어지지않은 상태
 				msg="회원가입 실패";
-				url="/main.do";
+				url="/home.do";
 				
 			}
 			model.addAttribute("msg",msg);
